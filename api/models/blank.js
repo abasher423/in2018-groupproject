@@ -1,5 +1,11 @@
 const mongoose = require('mongoose');
 
+const couponSchema = mongoose.Schema({
+    _id: mongoose.Schema.Types.ObjectId,
+    origin: String,
+    destination: String
+});
+
 const blankSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
     type: { 
@@ -27,12 +33,6 @@ const blankSchema = mongoose.Schema({
         type: Date
     },
     coupons: [couponSchema]
-});
-
-const couponSchema = mongoose.Schema({
-    _id: mongoose.Schema.Types.ObjectId,
-    origin: String,
-    destination: String
 });
 
 module.exports = mongoose.model('Blank', blankSchema);
