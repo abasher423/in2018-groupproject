@@ -3,6 +3,10 @@ const app = express();
 const morgan = require("morgan");
 const mongoose = require("mongoose");
 
+const customerRoutes = require("./api/routes/customers");
+const blankRoutes = require("./api/routes/blanks");
+const userRoutes = require("./api/routes/users");
+
 mongoose.connect(
     process.env.MONGO_ATLAS_ADDR,
   {
@@ -13,7 +17,6 @@ mongoose.connect(
 mongoose.Promise = global.Promise;
 
 app.use(morgan("dev"));
-//app.use('/uploads', express.static('uploads'));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
@@ -29,6 +32,10 @@ app.use((req, res, next) => {
   }
   next();
 });
+
+app.use("/customers", customerRoutes);
+app.use("/blanks", blankRoutes);
+app.use("/users", userRoutes);
 
 app.use((req, res, next) => {
   const error = new Error("Not found");
