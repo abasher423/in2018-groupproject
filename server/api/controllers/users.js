@@ -11,12 +11,12 @@ exports.users_get_all = (req, res, next) => {
 }
 exports.user_signup = (req, res, next) => {
     res.status(200).json({
-        message: 'signed up'
+        message: `signed up`
     });
 }
 exports.user_login = (req, res, next) => {
     res.status(200).json({
-        message: 'logged in'
+        message: `logged in  ${req.body.email}!`
     });
 }
 exports.users_update_user = (req, res, next) => {
