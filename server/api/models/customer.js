@@ -10,8 +10,7 @@ const customerSchema = mongoose.Schema({
         type: String
     },
     phone: { 
-        type: Number, 
-        unique: true 
+        type: Number,
     },
     status: {
         type: String, 
