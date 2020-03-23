@@ -6,21 +6,23 @@ const customerSchema = mongoose.Schema({
         type: String, 
         required: true 
     },
+    alias: {
+        type: String
+    },
     phone: { 
         type: Number, 
-        required: true, 
         unique: true 
     },
     status: {
         type: String, 
-        enum: ['Normal', 'Special'],
+        enum: ['Regular', 'Valued'],
         required: true
     },
     discount: {
-        type: Number,
+        type: Map,
+        of: Number,
         min: 0,
         max: 100,
-        default: 0
     }
 });
 
