@@ -30,15 +30,20 @@ const transactionSchema = mongoose.Schema({
     customer: {
         type: mongoose.Schema.ObjectId,
         ref: 'Customer',
-        required: true
     },
     paymentType: {
         type: String,
         enum: ['Cash', 'Card', 'Delayed'],
         required: true
     },
-    cardDetails: {
+    cardNumber: {
         type: Number,
+        required: function() {
+            return this.paymentType === 'Card';
+        }
+    },
+    cardType: {
+        type: String,
         required: function() {
             return this.paymentType === 'Card';
         }
@@ -48,6 +53,14 @@ const transactionSchema = mongoose.Schema({
         required: true,
         min: 0,
         max: 100
+    },
+    taxLocal: {
+        type: Number,
+        required: true
+    },
+    taxOther: {
+        type: Number,
+        required: true
     }
 });
 
