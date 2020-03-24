@@ -8,17 +8,12 @@ const couponSchema = mongoose.Schema({
 
 const blankSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
-    type: { 
-        type: String,
-        enum: ['444', '440', '420', '201', '101', '451', '452'],
-        required: true
-    },
     uniqueNumber: {
         type: String,
-        unique: true,
         required: true,
-        minlength: 6,
-        maxlength: 8,
+        unique: true,
+        minlength: 9,
+        maxlength:11,
         match: /[0-9]*/
     },
     dateAdded: {
@@ -33,6 +28,14 @@ const blankSchema = mongoose.Schema({
         type: Date
     },
     coupons: [couponSchema]
+});
+
+blankSchema.virtual('type').get(function() {
+    return this.uniqueNumber.slice(0,3);
+});
+
+blankSchema.virtual('number').get(function() {
+    return this.uniqueNumber.slice(4);
 });
 
 module.exports = mongoose.model('Blank', blankSchema);
