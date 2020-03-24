@@ -6,21 +6,19 @@ exports.transactions_get_all = (req, res, next) => {
     // finds all elements (add .where/limit)
     Transaction.find()
     // fetch these fields and no other fields
-    //.select('c')
+    .select('currency amount date blank')
      .exec()
      .then(docs => {
          const response = {
              count: docs.length,
              transactions: docs.map(doc => {
                  return {
-                     currency: docs.currency,
-                     amount: docs.amount,
-                     date: docs.date,
-                     blank: docs.blank,
-                     request: {
-                         type: 'GET', 
-                         url: 'http://localhost:3000/products/' + docs.blank
-                     }
+                     _id: doc._id,
+                     currency: doc.currency,
+                     amount: doc.amount,
+                     date: doc.date,
+                     blank: doc.blank,
+                     message: 'successfully worked'
                  }
              })
          }
@@ -37,7 +35,7 @@ exports.transactions_get_all = (req, res, next) => {
 exports.transactions_create_transaction = (req, res, next) => {
     console.log(req.file);
     // product your planning on storing
-    const transactions = new Transaction({
+    const transaction = new Transaction({
         _id: new mongoose.Types.ObjectId(),
         currency: req.body.currency,
         amount: req.body.amount,
@@ -49,20 +47,16 @@ exports.transactions_create_transaction = (req, res, next) => {
         taxLocal: req.body.taxLocal,
         taxOther: req.body.taxOther
     });
-    transactions
+    transaction
         .save()
         .then(result => {
           console.log(result);
           res.status(201).json({
             message: 'Created transaction successfully',
-            createdProducted: {
+            createdTransaction: {
                 _id: result._id,
                 currency: result.currency,
                 amount: result.amount,
-                request: {
-                    type: 'POST',
-                    url: 'http://localhost:3000/products/' + result._id
-                }
             }
         });
     })
@@ -75,10 +69,26 @@ exports.transactions_create_transaction = (req, res, next) => {
 }
 
 exports.transactions_get_transaction = (req, res, next) => {
-    res.status(200).json({
-        message: 'got it'
-    });
+    const id = req.params.transactionId;
+    Transaction.findById(id)
+    .select('currency amount date blank')
+     .exec()
+     .then(doc => {
+         console.log("from the database", doc);
+         if (doc) {
+             res.status(200).json({
+                 transaction: doc,
+             });
+         } else {
+             res.status(404).json({message: 'No valid entry found for provided ID'});
+         }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({error: err});
+        });
 }
+
 exports.transactions_update_transaction = (req, res, next) => {
     res.status(200).json({
         message: 'updated'
