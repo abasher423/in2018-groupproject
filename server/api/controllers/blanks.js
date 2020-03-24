@@ -8,7 +8,7 @@ exports.blanks_get_all = (req, res, next) => {
     .then(docs => {
       const response = {
         count: docs.length,
-        products: docs.map(doc => {
+        blanks: docs.map(doc => {
           return {
             type: doc.type,
             number: doc.number,
