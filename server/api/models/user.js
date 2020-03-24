@@ -18,7 +18,8 @@ const userSchema = mongoose.Schema({
         type: Number,
         min: 100,
         max: 999,
-        required: true
+        required: true,
+        unique: true
     }
 });
 
