@@ -16,9 +16,15 @@ exports.transactions_get_all = (req, res, next) => {
                      _id: doc._id,
                      currency: doc.currency,
                      amount: doc.amount,
-                     date: doc.date,
+                     conversionRate: doc.conversionRate,
                      blank: doc.blank,
-                     message: 'successfully worked'
+                     paymentType: doc.paymentType,
+                     cardNumber: doc.cardNumber,
+                     cardType: doc.cardType,
+                     commision: doc.commision,
+                     taxLocal: doc.taxLocal,
+                     taxOther: doc.taxOther,
+                     message: 'got em'
                  }
              })
          }
@@ -43,6 +49,8 @@ exports.transactions_create_transaction = (req, res, next) => {
         conversionRate: req.body.conversionRate,
         blank: req.body.blank,
         paymentType: req.body.paymentType,
+        cardNumber: req.body.cardNumber,
+        cardType: req.body.cardType,
         commision: req.body.commision,
         taxLocal: req.body.taxLocal,
         taxOther: req.body.taxOther
@@ -57,6 +65,15 @@ exports.transactions_create_transaction = (req, res, next) => {
                 _id: result._id,
                 currency: result.currency,
                 amount: result.amount,
+                date: result.date,
+                conversionRate: result.conversionRate,
+                blank: result.blank,
+                paymentType: result.paymentType,
+                cardNumber: result.cardNumber,
+                cardType: result.cardType,
+                commision: result.commision,
+                taxLocal: result.taxLocal,
+                taxOther: result.taxOther
             }
         });
     })
@@ -90,12 +107,39 @@ exports.transactions_get_transaction = (req, res, next) => {
 }
 
 exports.transactions_update_transaction = (req, res, next) => {
-    res.status(200).json({
-        message: 'updated'
-    });
+    const id = req.params.transactionId; 
+    const updateOps = {};
+    for (const ops of req.body) {
+        updateOps[ops.propName] = ops.value;
+    }   
+    Transaction.update({_id: id}, { $set: updateOps })
+     .exec()
+     .then(result => {
+         console.log(result);
+         res.status(200).json({
+             message: 'Transaction Updated!',
+         });
+     })
+     .catch(err => {
+         console.log(err);
+         res.status(500).json({
+             error: err
+         });
+     });
 }
+
 exports.transactions_delete_transaction = (req, res, next) => {
-    res.status(200).json({
-        message: 'deleted'
-    });
+    const id = req.params.transactionId;
+    Transaction.remove({ _id: id })
+     .exec()
+     .then(result => {
+        res.status(200).json({
+            message: 'PRODUCT DELETED'
+        });
+     })
+     .catch(err => {
+         res.status(500).json({
+             error: err
+         })
+     })
 }
