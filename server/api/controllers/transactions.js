@@ -5,8 +5,8 @@ const Transaction = require("../models/transaction");
 exports.transactions_get_all = (req, res, next) => {
     // finds all elements (add .where/limit)
     Transaction.find()
-    // fetch these fields and no other fields
-    .select('currency amount date blank')
+    .populate("blank", "uniqueNumber advisor")
+    .populate("customer", "fullName")
      .exec()
      .then(docs => {
          const response = {
@@ -18,13 +18,14 @@ exports.transactions_get_all = (req, res, next) => {
                      amount: doc.amount,
                      conversionRate: doc.conversionRate,
                      blank: doc.blank,
+                     customer: doc.customer,
+                     datePaid: doc.datePaid,
                      paymentType: doc.paymentType,
                      cardNumber: doc.cardNumber,
                      cardType: doc.cardType,
                      commision: doc.commision,
                      taxLocal: doc.taxLocal,
-                     taxOther: doc.taxOther,
-                     message: 'got em'
+                     taxOther: doc.taxOther
                  }
              })
          }
@@ -48,6 +49,8 @@ exports.transactions_create_transaction = (req, res, next) => {
         date: req.body.date,
         conversionRate: req.body.conversionRate,
         blank: req.body.blank,
+        customer: req.body.customer,
+        datePaid: req.body.datePaid,
         paymentType: req.body.paymentType,
         cardNumber: req.body.cardNumber,
         cardType: req.body.cardType,
@@ -68,6 +71,8 @@ exports.transactions_create_transaction = (req, res, next) => {
                 date: result.date,
                 conversionRate: result.conversionRate,
                 blank: result.blank,
+                customer: result.customer,
+                datePaid: result.datePaid,
                 paymentType: result.paymentType,
                 cardNumber: result.cardNumber,
                 cardType: result.cardType,
@@ -88,7 +93,6 @@ exports.transactions_create_transaction = (req, res, next) => {
 exports.transactions_get_transaction = (req, res, next) => {
     const id = req.params.transactionId;
     Transaction.findById(id)
-    .select('currency amount date blank')
      .exec()
      .then(doc => {
          console.log("from the database", doc);
@@ -134,7 +138,7 @@ exports.transactions_delete_transaction = (req, res, next) => {
      .exec()
      .then(result => {
         res.status(200).json({
-            message: 'PRODUCT DELETED'
+            message: 'Transaction removed'
         });
      })
      .catch(err => {

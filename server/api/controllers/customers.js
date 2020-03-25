@@ -4,7 +4,7 @@ const Customer = require("../models/customer");
 
 exports.customers_get_all = (req, res, next) => {
     Customer.find()
-    .select("_id fullName alias phone status discount")
+    .select("_id fullName alias phone status discount lateOnPayment")
     .exec()
     .then(docs => {
         res.status(200).json({
@@ -16,7 +16,8 @@ exports.customers_get_all = (req, res, next) => {
                 alias: doc.alias,
                 phone: doc.phone,
                 status: doc.status,
-                discount: doc.discount
+                discount: doc.discount,
+                lateOnPayment: doc.lateOnPayment
               };
             })
           });
@@ -34,7 +35,8 @@ exports.customers_create_customer = (req, res, next) => {
         alias: req.body.alias,
         phone: req.body.phone,
         status: req.body.status,
-        discount: req.body.discount
+        discount: req.body.discount,
+        lateOnPayment: req.body.lateOnPayment
       });
       customer
         .save()
@@ -59,7 +61,7 @@ exports.customers_create_customer = (req, res, next) => {
 exports.customers_get_customer = (req, res, next) => {
     const id = req.params.customerId;
     Customer.findById(id)
-    .select("_id fullName alias phone status discount")
+    .select("_id fullName alias phone status discount lateOnPayment")
     .exec()
     .then(doc => {
         console.log("From database", doc);
