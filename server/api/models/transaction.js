@@ -31,6 +31,9 @@ const transactionSchema = mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: 'Customer',
     },
+    datePaid: {
+        type: Date
+    },
     paymentType: {
         type: String,
         enum: ['Cash', 'Card', 'Delayed'],

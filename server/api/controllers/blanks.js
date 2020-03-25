@@ -4,6 +4,7 @@ const Blank = require("../models/blank");
 
 exports.blanks_get_all = (req, res, next) => {
     Blank.find()
+    .populate("advisor", "name")
     .exec()
     .then(docs => {
       const response = {
@@ -62,6 +63,7 @@ exports.blanks_get_blank = (req, res, next) => {
     const id = req.params.blankId;
     Blank.findById(id)
       .select("type number uniqueNumber dateAdded advisor dateAssigned coupons")
+      .populate("advisor", "name")
       .exec()
       .then(doc => {
         console.log("From database", doc);
@@ -81,12 +83,12 @@ exports.blanks_get_blank = (req, res, next) => {
       });
 }
 exports.blanks_update_blank = (req, res, next) => {
-  const id = req.params.blankId;
+  const blankNo = req.params.blankUniqueNumber;
   const updateOps = {};
   for (const ops of req.body) {
     updateOps[ops.propName] = ops.value;
   }
-  Blank.update({ _id: id }, { $set: updateOps })
+  Blank.update({ uniqueNumber: blankNo }, { $set: updateOps })
     .exec()
     .then(result => {
       res.status(200).json({

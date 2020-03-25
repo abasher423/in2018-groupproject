@@ -10,7 +10,7 @@ router.post("/", blanksController.blanks_create_blank);
 
 router.get("/:blankId", blanksController.blanks_get_blank);
 
-router.patch("/:blankId", blanksController.blanks_update_blank);
+router.patch("/:blankUniqueNumber", blanksController.blanks_update_blank);
 
 router.delete("/:blankId", blanksController.blanks_delete_blank);
 

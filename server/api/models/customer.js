@@ -22,6 +22,10 @@ const customerSchema = mongoose.Schema({
         of: Number,
         min: 0,
         max: 100,
+    },
+    lateOnPayment: {
+        type: Boolean,
+        default: false
     }
 });
 
