@@ -1,12 +1,11 @@
 <template>
-  <v-app id="inspire">
+  <v-app>
     <v-content>
       <v-container
-        class="fill-height"
         fluid
       >
         <v-row
-          align="center"
+          align="start"
           justify="center"
         >
           <v-col
@@ -20,19 +19,22 @@
                 dark
                 flat
               >
-                <v-toolbar-title>Login form</v-toolbar-title>
+                <v-toolbar-title>Login</v-toolbar-title>
               </v-toolbar>
               <v-card-text>
                 <v-form>
                   <v-text-field
-                    label="Login"
-                    name="login"
+                    id="uniqueNumber"
+                    v-model="uniqueNumber"
+                    label="ID"
+                    name="uniqueNumber"
                     prepend-icon="person"
                     type="text"
                   />
 
                   <v-text-field
                     id="password"
+                    v-model="password"
                     label="Password"
                     name="password"
                     prepend-icon="lock"
@@ -60,31 +62,29 @@
 <script>
 import AuthenticationService from '@/services/AuthenticationService'
 export default {
+  name: 'Login',
+  props: {
+      source: String,
+  },
   data () {
     return {
-      email: '',
+      uniqueNumber: '',
       password: ''
     }
   }, 
-  // watch: {
-  //   email (value){
-  //     console.log("email has changed", value);
-  //   }
-  // },
   methods: {
     async login() {
-       const response = await AuthenticationService.login({
-         email: this.email,
-         password: this.password
-       })
+      try {
+        const response = await AuthenticationService.login({
+          uniqueNumber: this.uniqueNumber,
+          password: this.password
+        })
+      } catch (error){
+        this.error = error.response.data.error
+      }
        console.log(response.data)
     }
   }
-  // mounted () {
-  //   setTimeout(() => {
-  //     this.email = 'hello world'
-  //   }, 2000)
-  // }
 }
 </script>
 
