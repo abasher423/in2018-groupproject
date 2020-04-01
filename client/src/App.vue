@@ -1,6 +1,9 @@
 <template>
   <div id="app">
     <v-app>
+      <page-header 
+        v-if="$store.state.isUserLoggedIn"
+      />
       <v-content>
         <v-container fluid> 
           <router-view/>
@@ -11,8 +14,12 @@
 </template>
 
 <script>
+import PageHeader from '@/components/Header.vue'
 export default {
-  name: 'App'
+  name: 'App',
+  components: {
+    PageHeader
+  }
 }
 </script>
 
