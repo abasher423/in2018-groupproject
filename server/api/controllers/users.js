@@ -29,10 +29,10 @@ exports.users_get_all = (req, res, next) => {
     });
 }
 exports.user_signup = (req, res, next) => {
-    User.find({ uniqueNumber: req.body.uniqueNumber })
+    User.findOne({ uniqueNumber: req.body.uniqueNumber })
     .exec()
     .then(user => {
-      if (user.length >= 1) {
+      if (!user) {
         return res.status(409).json({
           message: "User exists"
         });
@@ -70,15 +70,15 @@ exports.user_signup = (req, res, next) => {
     });
 }
 exports.user_login = (req, res, next) => {
-    User.find({ uniqueNumber: req.body.uniqueNumber })
+    User.findOne({ uniqueNumber: req.body.uniqueNumber })
     .exec()
     .then(user => {
-      if (user.length < 1) {
+      if (!user) {
         return res.status(401).json({
           message: "Auth failed"
         });
       }
-      bcrypt.compare(req.body.password, user[0].password, (err, result) => {
+      bcrypt.compare(req.body.password, user.password, (err, result) => {
         if (err) {
           return res.status(401).json({
             message: "Auth failed"
@@ -87,9 +87,9 @@ exports.user_login = (req, res, next) => {
         if (result) {
           const token = jwt.sign(
             {
-              uniqueNumber: user[0].uniqueNumber,
-              priviledge: user[0].priviledge,
-              userId: user[0]._id
+              uniqueNumber: user.uniqueNumber,
+              priviledge: user.priviledge,
+              userId: user._id
             },
             process.env.JWT_KEY,
             {
@@ -98,7 +98,11 @@ exports.user_login = (req, res, next) => {
           );
           return res.status(200).json({
             message: "Auth successful",
-            token: token
+            token: token,
+            user: {
+              uniqueNumber: user.uniqueNumber,
+              priviledge: user.priviledge
+            }
           });
         }
         res.status(401).json({
