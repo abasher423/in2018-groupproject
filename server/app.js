@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const morgan = require("morgan");
+const morganBody = require("morgan-body");
 const mongoose = require("mongoose");
 const cors = require('cors');
 
@@ -22,6 +23,7 @@ app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cors());
+morganBody(app);
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
