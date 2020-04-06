@@ -19,11 +19,14 @@
                         >Blank Stock
                     </v-btn>
             
+                     <!--v-if="!$store.state.user.priviledge === 'Advisor'"-->
                     <v-btn
-                        v-if="!$store.state.user.priviledge === 'Advisor'"
                         block
                         color="primary"
                         class="ma-2"
+                        :to="{
+                            name: 'transactions'
+                        }"
                         >Transactions
                     </v-btn>
 

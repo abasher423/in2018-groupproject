@@ -1,12 +1,21 @@
 const mongoose = require("mongoose");
+const moment = require('moment');
 
 const Transaction = require("../models/transaction");
 
 exports.transactions_get_all = (req, res, next) => {
     // finds all elements (add .where/limit)
     Transaction.find()
-    .populate("blank", "uniqueNumber advisor")
+    .populate({ 
+        path:"blank",
+        select: "uniqueNumber advisor",
+        populate: { 
+            path: "advisor",
+            select: "name -_id uniqueNumber"
+        }
+    })
     .populate("customer", "fullName")
+    .sort([['date', -1]])
      .exec()
      .then(docs => {
          const response = {
@@ -14,6 +23,7 @@ exports.transactions_get_all = (req, res, next) => {
              transactions: docs.map(doc => {
                  return {
                      _id: doc._id,
+                     date: moment(doc.date).format('MMMM Do YYYY'),
                      currency: doc.currency,
                      amount: doc.amount,
                      conversionRate: doc.conversionRate,
@@ -25,7 +35,8 @@ exports.transactions_get_all = (req, res, next) => {
                      cardType: doc.cardType,
                      commision: doc.commision,
                      taxLocal: doc.taxLocal,
-                     taxOther: doc.taxOther
+                     taxOther: doc.taxOther,
+                     paid: doc.paid
                  }
              })
          }
