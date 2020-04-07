@@ -67,4 +67,12 @@ const transactionSchema = mongoose.Schema({
     }
 });
 
+transactionSchema.virtual('paid').get(function() {
+    if(this.datePaid || this.paymentType != "Delayed"){
+        return "Yes"
+    } else {
+        return "No"
+    }
+});
+
 module.exports = mongoose.model('Transaction', transactionSchema);
