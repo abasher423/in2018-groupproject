@@ -3,7 +3,7 @@ import Router from 'vue-router'
 import Login from '@/components/Login'
 import Menu from '@/components/Menu'
 import Transactions from '@/components/Transactions'
-import Customers from '@/components/Transactions'
+import Customers from '@/components/Customers'
 
 Vue.use(Router)
 
