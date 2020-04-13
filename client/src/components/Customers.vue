@@ -1,9 +1,5 @@
 <template>
     <div id="customers">
-        <v-snackbar v-model="snackbar">
-            <span>{{snackbarText}} is late on payment</span>
-            <v-btn text color="white" :timeout="0" @click="snackbar = false">close</v-btn>
-        </v-snackbar>
         <v-app class="text-justify">
             <div class="display-2">Customers </div>
             <v-expansion-panels
@@ -21,6 +17,12 @@
                                      <li>Status: {{customer.status}}</li>
                                     <li v-if="customer.phone">Phone No: {{customer.phone}}</li>
                                     <li v-if="customer.discount">Discount: {{customer.discount}}</li>
+                                    <div v-if="customer.lateOnPayment === true">
+                                        <v-snackbar color='#2196F3' :timeout=0 v-model="snackbar">
+                                            <span>{{customer.fullName}} is late on payment</span>
+                                            <v-btn dark color='#2196F3' @click="snackbar = false">close</v-btn>
+                                        </v-snackbar>
+                                    </div>
                                 </ul>
                             </div>
                         </v-expansion-panel-content>
@@ -40,9 +42,7 @@ export default {
     data(){
         return {
             customers: null,
-            snackbar: true,
-            latePayment: false,
-            snackbarText: ""
+            snackbar: true
         }
     },
     async mounted() {
