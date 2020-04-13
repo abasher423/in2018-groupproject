@@ -34,6 +34,9 @@
                         block
                         color="primary"
                         class="ma-2"
+                        :to="{
+                            name: 'customers'
+                        }"
                         >Customers
                     </v-btn>
 
