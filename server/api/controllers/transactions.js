@@ -121,6 +121,35 @@ exports.transactions_get_transaction = (req, res, next) => {
         });
 }
 
+exports.transactions_get_transaction_by_b_id = (req, res, next) => {
+    const id = req.params.blankId;
+    Transaction.findOne({blank: id})
+    .populate({ 
+        path:"blank",
+        select: "uniqueNumber advisor",
+        populate: { 
+            path: "advisor",
+            select: "name -_id uniqueNumber"
+        }
+    })
+    .populate("customer", "fullName")
+     .exec()
+     .then(doc => {
+         console.log("from the database", doc);
+         if (doc) {
+             res.status(200).json({
+                 transaction: doc,
+             });
+         } else {
+             res.status(404).json({message: 'No valid entry found for provided ID'});
+         }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({error: err});
+        });
+}
+
 exports.transactions_update_transaction = (req, res, next) => {
     const id = req.params.transactionId; 
     const updateOps = {};

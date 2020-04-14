@@ -19,7 +19,9 @@
                                     <li v-if="transaction.customer">Customer: {{transaction.customer.fullName}}</li>
                                     <li>Paid: {{transaction.paid}} 
                                         <div>
-                                            <Payment :transaction="transaction" v-if="transaction.paid === 'No'"/>
+                                            <Payment @paidUpdate="onPaidUpdate" :transaction="transaction" v-if="transaction.paid === 'No'"
+                                                
+                                            />
                                         </div>
                                     </li>
                                 </ul>
@@ -44,10 +46,27 @@ export default {
         return {
             transactions: null,
             unpaidOnly: false,
+            userId: null
         }
     },
     async mounted() {
         this.transactions = (await TransactionsService.index()).data.transactions
+        this.userId = this.$store.state.user.priviledge
+        console.log(this.userId)
+    },
+    methods: {
+        async onPaidUpdate (transactionId, paymentType, cardType, cardNumber) {
+            let pairs = [{propName: "paymentType", value: null}, {propName: "cardType", value: null}, {propName: "cardNumber", value: null}]
+            pairs[0].value = paymentType
+            pairs[1].value = cardType
+            pairs[2].value = cardNumber
+            try {
+                await TransactionsService.update(transactionId, pairs)
+            } catch (err) {
+                console.log(err)
+            }
+            this.transactions = (await TransactionsService.index()).data.transactions
+        }
     }
 
 }

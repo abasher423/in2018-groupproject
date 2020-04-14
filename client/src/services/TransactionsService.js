@@ -6,5 +6,8 @@ export default {
     },
     update(transactionId, values){
         return Api().patch(`/transactions/${transactionId}`, values)
+    },
+    getSingleByBlank(blankId){
+        return Api().get(`/transactions/getByBlankId/${blankId}`)
     }
 }
