@@ -82,6 +82,31 @@ exports.blanks_get_blank = (req, res, next) => {
         res.status(500).json({ error: err });
       });
 }
+
+exports.blanks_get_blank_by_uniqueNo = (req, res, next) => {
+  const id = req.params.blankId;
+  Blank.findOne({uniqueNumber: id})
+    .select("type number uniqueNumber dateAdded advisor dateAssigned coupons")
+    .populate("advisor", "name")
+    .exec()
+    .then(doc => {
+      console.log("From database", doc);
+      if (doc) {
+        res.status(200).json({
+          blank: doc
+        });
+      } else {
+        res
+          .status(404)
+          .json({ message: "No valid entry found for provided ID" });
+      }
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({ error: err });
+    });
+}
+
 exports.blanks_update_blank = (req, res, next) => {
   const blankNo = req.params.blankUniqueNumber;
   const updateOps = {};
@@ -117,4 +142,20 @@ exports.blanks_delete_blank = (req, res, next) => {
         error: err
       });
     });
+}
+exports.blanks_delete_blank_by_number = (req, res, next) => {
+  const un = req.params.uniqueNumber
+  Blank.deleteOne({ uniqueNumber: un })
+  .exec()
+  .then(result => {
+    res.status(200).json({
+      message: "Blank deleted"
+    });
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(500).json({
+      error: err
+    });
+  });
 }
