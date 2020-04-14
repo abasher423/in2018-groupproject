@@ -6,6 +6,7 @@ import Transactions from '@/components/Transactions'
 import Users from '@/components/Users'
 import BlankStock from '@/components/BlankStock'
 import NewSale from '@/components/NewSale'
+import Customers from '@/components/Customers'
 
 Vue.use(Router)
 
@@ -39,7 +40,10 @@ export default new Router({
     {
       path: '/newsale',
       name: 'newsale',
-      component: NewSale
+      component: NewSale,
+      path: '/customers',
+      name: 'customers',
+      component: Customers
     }
   ]
 })
