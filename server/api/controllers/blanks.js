@@ -4,7 +4,7 @@ const Blank = require("../models/blank");
 
 exports.blanks_get_all = (req, res, next) => {
     Blank.find()
-    .populate("advisor", "name")
+    .populate("advisor", "name _id")
     .exec()
     .then(docs => {
       const response = {
