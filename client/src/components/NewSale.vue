@@ -109,14 +109,15 @@
 </template>
 
 <script>
-import UsersService from '@/services/UsersService'
+import CustomersService from '@/services/CustomersService'
 import BlanksService from '@/services/BlanksService'
 import TransactionsService from '@/services/TransactionsService'
 export default {
 
 data: () => ({
     blanks: ['Please specify blank type'],
-    customers: null,
+    customers: ['Casual Customer'],
+    customersId: [],
     type: null,
     valid: false,
     firstname: '',
@@ -133,17 +134,25 @@ data: () => ({
   }),
     async mounted() {
         //this.transactions = (await TransactionsService.index()).data.transactions
-        let customers = (await UsersService.index()).data.users
-        for(let user of users){
-            if(user.priviledge === 'Advisor'){
-                this.advisorNo.push(user.name)
-                this.advisorId.push(user._id)
-            }
+        let custs = (await CustomersService.index()).data.customers
+        for(let customer of custs){
+                this.customers.push(customer.alias)
+                this.customersId.push(customer._id)
         }
     },
-  methods: {
-      update(){
-          console.log(this.type)
+
+    methods: {
+      async update(){
+        let bks = (await BlanksService.index()).data.blanks
+        this.blanks = []
+        console.log(this.blanks)
+        for(let blank of bks){
+            if((blank.advisor!= null) && (this.type === blank.type && blank.advisor._id === this.$store.state.user._id)){
+                console.log(blank.number)
+                this.blanks.push(blank.number)
+            }
+        }
+        console.log(this.blanks)
       }
   }
 
