@@ -41,6 +41,9 @@ export default new Router({
       path: '/newsale',
       name: 'newsale',
       component: NewSale,
+
+    },
+    {
       path: '/customers',
       name: 'customers',
       component: Customers
