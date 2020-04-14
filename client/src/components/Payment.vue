@@ -64,19 +64,9 @@ export default {
     methods: {
         async update() {
             const transactionId = this.$props.transaction._id
-            let pairs = [{propName: "paymentType", value: null}, {propName: "cardType", value: null}, {propName: "cardNumber", value: null}]
-            pairs[0].value = this.paymentType
-            pairs[1].value = this.cardType
-            pairs[2].value = this.cardNumber
-            try {
-                await TransactionsService.update(transactionId, pairs)
-                this.dialog = false
-                this.$router.push({
-                    name: 'transactions',
-                })
-            } catch (err) {
-                console.log(err)
-            }
+            this.$emit('paidUpdate', transactionId, this.paymentType, this.cardType, this.cardNumber)
+            this.dialog = false
+              
         }
   },
 }

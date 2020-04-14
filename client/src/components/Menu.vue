@@ -9,6 +9,9 @@
                         block
                         color="primary"
                         class="ma-2"
+                        :to="{
+                            name: 'newsale'
+                        }"
                         >New Sale
                     </v-btn>
                     
@@ -16,6 +19,9 @@
                         block
                         color="primary"
                         class="ma-2"
+                        :to="{
+                            name: 'blanks'
+                        }"
                         >Blank Stock
                     </v-btn>
             
@@ -42,6 +48,9 @@
                         block
                         color="primary"
                         class="ma-2"
+                        :to="{
+                            name: 'users'
+                        }"
                         >Users
                     </v-btn>
 

@@ -77,7 +77,8 @@ export default {
       try {
         const response = await AuthenticationService.login({
           uniqueNumber: this.uniqueNumber,
-          password: this.password
+          password: this.password,
+          _id: this._id
         })
         this.$store.dispatch('setToken', response.data.token)
         this.$store.dispatch('setUser', response.data.user)
