@@ -6,7 +6,7 @@ const User = require("../models/user");
 
 exports.users_get_all = (req, res, next) => {
     User.find()
-    .select("name priviledge _id")
+    .select("name priviledge _id uniqueNumber")
     .exec()
     .then(docs => {
       const response = {
@@ -15,6 +15,7 @@ exports.users_get_all = (req, res, next) => {
           return {
             name: doc.name,
             priviledge: doc.priviledge,
+            uniqueNumber: doc.uniqueNumber,
             _id: doc._id
           };
         })
@@ -89,7 +90,7 @@ exports.user_login = (req, res, next) => {
             {
               uniqueNumber: user.uniqueNumber,
               priviledge: user.priviledge,
-              userId: user._id
+              _id: user._id
             },
             process.env.JWT_KEY,
             {
@@ -101,7 +102,8 @@ exports.user_login = (req, res, next) => {
             token: token,
             user: {
               uniqueNumber: user.uniqueNumber,
-              priviledge: user.priviledge
+              priviledge: user.priviledge,
+              _id: user._id
             }
           });
         }
