@@ -98,7 +98,7 @@
                             <v-spacer></v-spacer>
                             <v-btn color="primary"  @click="searchtoggle = false" v-on:click="resetSearch">Close</v-btn>
                             <v-btn color="primary"  @click="searchBlank">Search</v-btn>
-
+                            
                             <v-dialog
                                 v-model="blankinfotoggle"
                                 persistent 
@@ -143,7 +143,7 @@
                     <v-dialog v-model="assigntoggle" persistent max-width="600px">
                         <template v-slot:activator="{ on }">
                             <v-btn 
-                            v-if="!$store.state.user.priviledge === 'Manager'"
+                            v-if="$store.state.user.priviledge === 'Manager'"
                             color="primary" block class="ma-2" v-on="on">Assign Blanks</v-btn>
                         </template>
                         <v-card>
@@ -171,7 +171,43 @@
                         <v-card-actions>
                             <v-spacer></v-spacer>
                             <v-btn color="primary"  @click="resetAssign">Close</v-btn>
-                            <v-btn color="primary"  @click="assignBlanks">Save</v-btn>
+                            <v-btn color="primary"  @click="checkBlanks">Save</v-btn>
+
+                            <v-dialog
+                                v-model="checktoggle"
+                                persistent 
+                                max-width="600px"
+                            >
+                                <v-card>
+                                
+                                <v-card-title>Are you sure you want to reassign these?</v-card-title>
+                                <v-list v-for="blank in blanks" :key="blank.number">
+                                    <v-list-item>
+                                        <v-list-item-content>
+                                            <v-list-item-title>{{blank.number}} - {{blank.advisor}}</v-list-item-title>
+                                        </v-list-item-content>
+                                    </v-list-item>
+                                </v-list>
+                        
+                                <v-divider></v-divider>
+                        
+                                <v-card-actions>
+                                    <v-spacer></v-spacer>
+                                    <v-btn
+                                    color="primary"
+                                    @click="checktoggle = false"
+                                    >
+                                    Cancel
+                                    </v-btn>
+                                    <v-btn
+                                    color="primary"
+                                    @click="assignBlanks"
+                                    >
+                                    Reassign
+                                    </v-btn>
+                                </v-card-actions>
+                                </v-card>
+                            </v-dialog>
                         </v-card-actions>
                         </v-card>
                     </v-dialog>
@@ -206,7 +242,9 @@ export default {
             blankinfotoggle: false,
             blankviewtoggle: false,
             assigntoggle: false,
+            checktoggle: false,
             error: null,
+            blanks: [],
             valid: null,
             
         }
@@ -251,7 +289,7 @@ export default {
         async searchBlank() {
             try {
                 this.blank = (await BlanksService.getSingleByUniqueNo(this.blankmin)).data.blank
-                this.transaction = (await TransactionsService.getSingleByBlank(this.blank._id)).data.transaction
+                //this.transaction = (await TransactionsService.getSingleByBlank(this.blank._id)).data.transaction
                 this.searchtoggle = false
                 this.blankinfotoggle = true
                 this.blankmin = null
@@ -259,15 +297,40 @@ export default {
             } catch (err) {
                 this.error = err.response.data.message
             }
+            try{
+                this.transaction = (await TransactionsService.getSingleByBlank(this.blank._id)).data.transaction
+            } catch(error){}
+        },
+
+        async checkBlanks(){
+            let blanks = []
+            try {
+                for (let index = this.blankmin; index <= this.blankmax; index++) {
+                    let blank = (await BlanksService.getSingleByUniqueNo(index)).data.blank
+                    if(blank.advisor != null){
+                        blanks.push({advisor: blank.advisor.name, number: blank.uniqueNumber})
+                    }
+                }
+
+                if(blanks.length > 0){
+                    this.checktoggle = true
+                    this.blanks = blanks
+                } else {
+                    this.assignBlanks()
+                }
+            } catch (err) {
+                this.error = err.response.data.message
+            }
         },
 
         async assignBlanks(){
+            this.checktoggle = false
             let pairs = [{propName: "advisor", value: null}]
             let id = this.advisorId[this.advisorNo.indexOf(this.indadvisorNo)]
             pairs[0].value = id
             try {
                 for (let index = this.blankmin; index <= this.blankmax; index++) {
-                    await BlanksService.updateBlank(id, pairs)
+                    await BlanksService.updateBlank(index, pairs)
                 }
                 this.assigntoggle = false
                 this.blankmin = null

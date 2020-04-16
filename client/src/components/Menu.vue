@@ -60,6 +60,14 @@
                     </v-btn>
 
                     <v-btn
+                        v-if="$store.state.user.priviledge === 'Manager'"
+                        block
+                        color="primary"
+                        class="ma-2"
+                        >Commission
+                    </v-btn>
+
+                    <v-btn
                         block
                         color="primary"
                         class="ma-2"
