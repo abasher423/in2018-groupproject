@@ -25,7 +25,8 @@ const transactionSchema = mongoose.Schema({
     blank: {
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'Blank',
-        required: true  
+        required: true,
+        unique: true
     },
     customer: {
         type: mongoose.Schema.ObjectId,

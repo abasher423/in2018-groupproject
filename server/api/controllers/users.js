@@ -62,7 +62,7 @@ exports.user_signup = (req, res, next) => {
               .catch(err => {
                 console.log(err);
                 res.status(500).json({
-                  error: err
+                  message: "Error creating user(Server)"
                 });
               });
           }
@@ -76,13 +76,13 @@ exports.user_login = (req, res, next) => {
     .then(user => {
       if (!user) {
         return res.status(401).json({
-          message: "Auth failed"
+          message: "Failed: password or login is incorrect"
         });
       }
       bcrypt.compare(req.body.password, user.password, (err, result) => {
         if (err) {
           return res.status(401).json({
-            message: "Auth failed"
+            message: "Failed: password or login is incorrect"
           });
         }
         if (result) {
@@ -108,14 +108,14 @@ exports.user_login = (req, res, next) => {
           });
         }
         res.status(401).json({
-          message: "Auth failed"
+          message: "Failed: password or login is incorrect"
         });
       });
     })
     .catch(err => {
       console.log(err);
       res.status(500).json({
-        error: err
+        message: "Error logging in(Server)"
       });
     });
 }

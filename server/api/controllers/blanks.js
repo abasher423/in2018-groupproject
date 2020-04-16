@@ -27,7 +27,7 @@ exports.blanks_get_all = (req, res, next) => {
     .catch(err => {
       console.log(err);
       res.status(500).json({
-        error: err
+        message: "Error retrieving blanks(Server)"
       });
     });
 }
@@ -56,7 +56,7 @@ exports.blanks_create_blank = (req, res, next) => {
         .catch(err => {
           console.log(err);
           res.status(500).json({
-            error: err
+            message: "Error creating blank(Server)"
           });
         });
 }
@@ -80,7 +80,7 @@ exports.blanks_get_blank = (req, res, next) => {
       })
       .catch(err => {
         console.log(err);
-        res.status(500).json({ error: err });
+        res.status(500).json({ message: "Error retrieving blank(Server)" });
       });
 }
 
@@ -99,12 +99,12 @@ exports.blanks_get_blank_by_uniqueNo = (req, res, next) => {
       } else {
         res
           .status(404)
-          .json({ message: "No valid entry found for provided ID" });
+          .json({ message: "No valid entry found for provided number" });
       }
     })
     .catch(err => {
       console.log(err);
-      res.status(500).json({ error: err });
+      res.status(500).json({ message: "Error retrieving blank(Server)" });
     });
 }
 
@@ -124,7 +124,7 @@ exports.blanks_update_blank = (req, res, next) => {
     .catch(err => {
       console.log(err);
       res.status(500).json({
-        error: err
+        message: "Error updating blank(Server)"
       });
     });
 }

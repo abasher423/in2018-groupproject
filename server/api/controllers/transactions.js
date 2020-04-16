@@ -45,7 +45,7 @@ exports.transactions_get_all = (req, res, next) => {
      .catch(err => {
         console.log(err);
         res.status(500).json({
-            error: err
+            message: "Error retrieving transactions(Server)"
         });
      });
 }
@@ -96,7 +96,7 @@ exports.transactions_create_transaction = (req, res, next) => {
     .catch(err => {
         console.log(err);
         res.status(500).json({
-            error: err
+            message: "Error Creating Transaction(Server)"
         })
     });   
 }
@@ -117,7 +117,7 @@ exports.transactions_get_transaction = (req, res, next) => {
         })
         .catch(err => {
             console.log(err);
-            res.status(500).json({error: err});
+            res.status(500).json({message: "Error retrieving transaction(Server)"});
         });
 }
 
@@ -146,7 +146,7 @@ exports.transactions_get_transaction_by_b_id = (req, res, next) => {
         })
         .catch(err => {
             console.log(err);
-            res.status(500).json({error: err});
+            res.status(500).json({message: "Error retrieving transaction(Server)"});
         });
 }
 
@@ -167,7 +167,7 @@ exports.transactions_update_transaction = (req, res, next) => {
      .catch(err => {
          console.log(err);
          res.status(500).json({
-             error: err
+             message: "Error updating transaction(Server)"
          });
      });
 }
