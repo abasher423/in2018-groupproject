@@ -17,7 +17,8 @@ exports.blanks_get_all = (req, res, next) => {
             advisor: doc.advisor,
             dateAssigned: doc.dateAssigned,
             coupons: doc.coupons,
-            _id: doc._id
+            _id: doc._id,
+            used: doc.used
           };
         })
       };
@@ -86,7 +87,7 @@ exports.blanks_get_blank = (req, res, next) => {
 exports.blanks_get_blank_by_uniqueNo = (req, res, next) => {
   const id = req.params.blankId;
   Blank.findOne({uniqueNumber: id})
-    .select("type number uniqueNumber dateAdded advisor dateAssigned coupons")
+    .select("type number uniqueNumber dateAdded advisor dateAssigned coupons used")
     .populate("advisor", "name")
     .exec()
     .then(doc => {

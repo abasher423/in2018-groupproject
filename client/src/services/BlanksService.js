@@ -13,7 +13,7 @@ export default {
     getSingleByUniqueNo(uniqueNumber){
         return Api().get(`blanks/byUniqueNo/${uniqueNumber}`);
     },
-    updateBlank(blankId, values){
-        return Api().patch(`blanks/${blankId}`, values)
+    updateBlank(uniqueNumber, values){
+        return Api().patch(`blanks/${uniqueNumber}`, values)
     }
 }
