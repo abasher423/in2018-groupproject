@@ -7,7 +7,9 @@
 
                     <v-dialog v-model="addtoggle" persistent max-width="600px">
                         <template v-slot:activator="{ on }">
-                            <v-btn color="primary" block class="ma-2" v-on="on">Add Blanks</v-btn>
+                            <v-btn 
+                            v-if="$store.state.user.priviledge === 'Admin'"
+                            color="primary" block class="ma-2" v-on="on">Add Blanks</v-btn>
                         </template>
                         <v-card>
                         <v-card-title>
@@ -15,6 +17,7 @@
                         </v-card-title>
                         <v-card-text>
                             <v-container>
+                            <v-form ref="add" v-model="valid">
                             <v-row>
                                 <v-col cols="12" sm="12">
                                     <v-text-field label="Blank Range Start" v-model="blankmin" required></v-text-field>
@@ -23,11 +26,13 @@
                                     <v-text-field label="Blank Range End" v-model="blankmax" required></v-text-field>
                                 </v-col>
                             </v-row>
+                            </v-form>
                             </v-container>
                         </v-card-text>
+                        <div v-if="error != null"> <v-icon>info</v-icon> {{error}} </div>
                         <v-card-actions>
                             <v-spacer></v-spacer>
-                            <v-btn color="primary"  @click="addtoggle = false">Close</v-btn>
+                            <v-btn color="primary"  @click="addtoggle = false" v-on:click="resetAdd">Close</v-btn>
                             <v-btn color="primary"  @click="addBlanks">Save</v-btn>
                         </v-card-actions>
                         </v-card>
@@ -35,7 +40,9 @@
 
                     <v-dialog v-model="removetoggle" persistent max-width="600px">
                         <template v-slot:activator="{ on }">
-                            <v-btn color="primary" block class="ma-2" v-on="on">Remove Blanks</v-btn>
+                            <v-btn 
+                            v-if="$store.state.user.priviledge === 'Admin'"
+                            color="primary" block class="ma-2" v-on="on">Remove Blanks</v-btn>
                         </template>
                         <v-card>
                         <v-card-title>
@@ -43,6 +50,7 @@
                         </v-card-title>
                         <v-card-text>
                             <v-container>
+                            <v-form ref="remove" v-model="valid">
                             <v-row>
                                 <v-col cols="12" sm="12">
                                     <v-text-field label="Blank Range Start" v-model="blankmin" required></v-text-field>
@@ -51,11 +59,13 @@
                                     <v-text-field label="Blank Range End" v-model="blankmax" required></v-text-field>
                                 </v-col>
                             </v-row>
+                            </v-form>
                             </v-container>
                         </v-card-text>
+                        <div v-if="error != null"> <v-icon>info</v-icon> {{error}} </div>
                         <v-card-actions>
                             <v-spacer></v-spacer>
-                            <v-btn color="primary"  @click="removetoggle = false">Close</v-btn>
+                            <v-btn color="primary"  @click="removetoggle = false" v-on:click="resetRemove">Close</v-btn>
                             <v-btn color="primary"  @click="removeBlanks">Save</v-btn>
                         </v-card-actions>
                         </v-card>
@@ -64,7 +74,9 @@
                      <!--v-if="!$store.state.user.priviledge === 'Advisor'"-->
                     <v-dialog v-model="searchtoggle" persistent max-width="600px">
                         <template v-slot:activator="{ on }">
-                            <v-btn color="primary" block class="ma-2" v-on="on">Search for a blank</v-btn>
+                            <v-btn 
+                            v-if="$store.state.user.priviledge != 'Advisor'"
+                            color="primary" block class="ma-2" v-on="on">Search for a blank</v-btn>
                         </template>
                         <v-card>
                         <v-card-title>
@@ -72,16 +84,19 @@
                         </v-card-title>
                         <v-card-text>
                             <v-container>
+                            <v-form ref="search" v-model="valid">
                             <v-row>
                                 <v-col cols="12" sm="12">
                                     <v-text-field label="Blank Number" v-model="blankmin" required></v-text-field>
                                 </v-col>
                             </v-row>
+                            </v-form>
                             </v-container>
                         </v-card-text>
+                        <div v-if="error != null"> <v-icon>info</v-icon> {{error}} </div>
                         <v-card-actions>
                             <v-spacer></v-spacer>
-                            <v-btn color="primary"  @click="searchtoggle = false">Close</v-btn>
+                            <v-btn color="primary"  @click="searchtoggle = false" v-on:click="resetSearch">Close</v-btn>
                             <v-btn color="primary"  @click="searchBlank">Search</v-btn>
 
                             <v-dialog
@@ -127,7 +142,9 @@
 
                     <v-dialog v-model="assigntoggle" persistent max-width="600px">
                         <template v-slot:activator="{ on }">
-                            <v-btn color="primary" block class="ma-2" v-on="on">Assign Blanks</v-btn>
+                            <v-btn 
+                            v-if="!$store.state.user.priviledge === 'Manager'"
+                            color="primary" block class="ma-2" v-on="on">Assign Blanks</v-btn>
                         </template>
                         <v-card>
                         <v-card-title>
@@ -135,6 +152,7 @@
                         </v-card-title>
                         <v-card-text>
                             <v-container>
+                            <v-form ref="assign" v-model="valid">
                             <v-row>
                                 <v-col cols="12" sm="12">
                                     <v-text-field label="Blank Range Start" v-model="blankmin" required></v-text-field>
@@ -146,26 +164,17 @@
                                     <v-select label="Advisor" v-model="indadvisorNo" required :items="advisorNo"></v-select>
                                 </v-col>
                             </v-row>
+                            </v-form>
                             </v-container>
                         </v-card-text>
+                        <div v-if="error != null"> <v-icon>info</v-icon> {{error}} </div>
                         <v-card-actions>
                             <v-spacer></v-spacer>
-                            <v-btn color="primary"  @click="assigntoggle=false">Close</v-btn>
+                            <v-btn color="primary"  @click="resetAssign">Close</v-btn>
                             <v-btn color="primary"  @click="assignBlanks">Save</v-btn>
                         </v-card-actions>
                         </v-card>
                     </v-dialog>
-
-                    <v-btn
-                        v-if="$store.state.user.priviledge === 'Admin'"
-                        block
-                        color="primary"
-                        class="ma-2"
-                        :to="{
-                            name: 'users'
-                        }"
-                        >Stock Turnover Reports
-                    </v-btn>
                 </v-col>
             </v-row>
             </v-container>
@@ -197,7 +206,8 @@ export default {
             blankinfotoggle: false,
             blankviewtoggle: false,
             assigntoggle: false,
-            err: null
+            error: null,
+            valid: null,
             
         }
     },
@@ -221,7 +231,7 @@ export default {
                 this.blankmin = null
                 this.blankmax = null
             } catch (err) {
-                console.log(err)
+                this.error = err.response.data.message
             }
         },
 
@@ -234,7 +244,7 @@ export default {
                 this.blankmin = null
                 this.blankmax = null
             } catch (err) {
-                console.log(err)
+                this.error = err.response.data.message
             }
         },
 
@@ -247,7 +257,7 @@ export default {
                 this.blankmin = null
                 this.blankmax = null
             } catch (err) {
-                console.log(err.message)
+                this.error = err.response.data.message
             }
         },
 
@@ -263,8 +273,36 @@ export default {
                 this.blankmin = null
                 this.blankmax = null
             } catch (err) {
-                console.log(err)
+                this.error = err.response.data.message
             }
+        }, 
+
+        resetAdd(){
+            this.$refs.add.reset()
+            this.addtoggle=false
+            this.valid = null
+            this.error = null
+        },
+
+        resetRemove(){
+            this.$refs.remove.reset()
+            this.removetoggle=false
+            this.valid = null
+            this.error = null
+        },
+
+        resetSearch(){
+            this.$refs.search.reset()
+            this.searchtoggle=false
+            this.valid = null
+            this.error = null
+        },
+
+        resetAssign(){
+            this.$refs.assign.reset()
+            this.assigntoggle=false
+            this.valid = null
+            this.error = null
         }
     }
 

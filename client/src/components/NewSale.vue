@@ -1,6 +1,10 @@
 <template>
 <div id="app">
     <v-app id="inspire">
+        <div v-if="errormount != null">
+            <v-icon>info</v-icon>
+            {{errormount}}
+        </div>
         <div class="display-2">New Sale </div>
         <v-form ref="form" v-model="valid">
         <v-container>
@@ -115,11 +119,14 @@
                 <v-select
                 :items="customers"
                 v-model="customer"
-                v-on:change="test"
                 label="Customer"
                 required
                 ></v-select>
             </v-col>
+            <div v-if="errorupdate != null">
+                <v-icon>info</v-icon>
+                {{errorupdate}}
+            </div>
             </v-row>
             <div v-if="type != null && ['444', '440', '420', '201', '101'].includes(type)" class="display-1"> Journey details </div>
             <div v-if="type != null && ['444', '440', '420', '201', '101'].includes(type)">
@@ -182,6 +189,10 @@
                                         required
                                     ></v-text-field>
                                     </v-col>
+                                    <div v-if="errorPay != null">
+                                        <v-icon>info</v-icon>
+                                        {{errorPay}}
+                                    </div>
                                 </v-row>
                                 </v-container>
                             </v-card-text>
@@ -226,96 +237,106 @@ data: () => ({
     paymentType: null,
     cardNumber: null,
     cardType: null,
-    date: null,
-    date: new Date().toISOString().substr(0, 7),
+    date: new Date().toISOString().substr(0, 10),
     menu: false,
     modal: false,
+    errorPay: null,
+    errormount: null,
+    errorupdate: null,
 
     nameRules: [
       v => !!v || 'Name is required',
     ],
   }),
     async mounted() {
-        //this.transactions = (await TransactionsService.index()).data.transactions
-        let custs = (await CustomersService.index()).data.customers
-        for(let customer of custs){
-                this.customers.push(customer.alias)
-                this.customersId.push(customer.id)
+        try{
+            let custs = (await CustomersService.index()).data.customers
+            for(let customer of custs){
+                    this.customers.push(customer.alias)
+                    this.customersId.push(customer.id)
+            }
+        } catch(error){
+            this.errormount = error.response.data.message
         }
     },
 
     methods: {
       async update(){
-        let bks = (await BlanksService.index()).data.blanks
-        this.blanks = []
-        for(let blank of bks){
-            if((blank.advisor!= null && !blank.used) && (this.type === blank.type && blank.advisor._id === this.$store.state.user._id)){
-                this.blanks.push(blank.number)
+        try{
+            let bks = (await BlanksService.index()).data.blanks
+            this.blanks = []
+            for(let blank of bks){
+                if((blank.advisor!= null && !blank.used) && (this.type === blank.type && blank.advisor._id === this.$store.state.user._id)){
+                    this.blanks.push(blank.number)
+                }
             }
-        }
 
-        if(['444', '440'].includes(this.type)){
-            this.counter = 4
-        } else if (['420', '201'].includes(this.type)){
-            this.counter = 2
-        } else if (this.type === '101'){
-            this.counter = 1
+            if(['444', '440'].includes(this.type)){
+                this.counter = 4
+            } else if (['420', '201'].includes(this.type)){
+                this.counter = 2
+            } else if (this.type === '101'){
+                this.counter = 1
+            }
+        } catch (error){
+            this.errorupdate = error.response.data.message
         }
       },
 
       reset () {
         this.$refs.form.reset()
+        this.errorPay = null
+        this.errormount = null
+        this.errorupdate = null
       },
 
       proceed () {
 
       },
 
-      test() {
-        console.log(this.customer)
-        console.log(this.customersId)
-        console.log(this.customersId[this.customers.indexOf(this.customer) - 1])
-      },
-
       async saveTransaction(){
-          const b = (await BlanksService.getSingleByUniqueNo(this.type + "" + this.blank)).data.blank._id
-          let customer = null
-          let datePaid = null
+          try{
+            const b = (await BlanksService.getSingleByUniqueNo(this.type + "" + this.blank)).data.blank._id
+            let customer = null
+            let datePaid = null
 
-          if(this.customer != 'Casual Customer'){
-              customer = this.customersId[this.customers.indexOf(this.customer) - 1]
-          } 
+            if(this.customer != 'Casual Customer'){
+                customer = this.customersId[this.customers.indexOf(this.customer) - 1]
+            } 
 
-          if(this.paymentType != 'Delayed'){
-              datePaid = this.date
+            if(this.paymentType != 'Delayed'){
+                datePaid = this.date
+            }
+
+            let commission = (await CommissionService.index()).data.interline
+
+            let transaction = {
+                currency: this.currency,
+                amount: this.amount,
+                date: this.date,
+                conversionRate: this.conversion,
+                blank: b,
+                customer: customer, 
+                datePaid: datePaid,
+                paymentType: this.paymentType,
+                cardNumber: this.cardNumber,
+                cardType: this.cardType,
+                commission: commission,
+                taxLocal: this.taxloc,
+                taxOther: this.tax
+            }
+
+            await TransactionsService.create(transaction)
+
+            let pairs = [{propName: "used", value: true}]
+
+            await BlanksService.updateBlank(this.type + "" + this.blank, pairs)
+
+            this.paymenttoggle = false
+            this.reset()
+          } catch (error){
+              this.errorPay = error.response.data.message
           }
-
-          let commission = (await CommissionService.index()).data.interline
-
-          let transaction = {
-             currency: this.currency,
-             amount: this.amount,
-             date: this.date,
-             conversionRate: this.conversion,
-             blank: b,
-             customer: customer, 
-             datePaid: datePaid,
-             paymentType: this.paymentType,
-             cardNumber: this.cardNumber,
-             cardType: this.cardType,
-             commission: commission,
-             taxLocal: this.taxloc,
-             taxOther: this.tax
-          }
-
-          await TransactionsService.create(transaction)
-
-          let pairs = [{propName: "used", value: true}]
-
-          await BlanksService.updateBlank(this.type + "" + this.blank, pairs)
-
-          this.paymenttoggle = false
-          this.reset()
       }
   }
 

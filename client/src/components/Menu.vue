@@ -9,6 +9,7 @@
                         block
                         color="primary"
                         class="ma-2"
+                        v-if="$store.state.user.priviledge === 'Advisor'"
                         :to="{
                             name: 'newsale'
                         }"
@@ -17,6 +18,7 @@
                     
                     <v-btn 
                         block
+                        v-if="$store.state.user.priviledge != 'Advisor'"
                         color="primary"
                         class="ma-2"
                         :to="{
