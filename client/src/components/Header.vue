@@ -11,6 +11,9 @@
       </router-link>
     </v-toolbar-title>
 
+    <v-spacer></v-spacer> 
+    <v-toolbar-title class="white--text">AirVia</v-toolbar-title>
+
     <v-spacer></v-spacer>
 
     <v-toolbar-items>
