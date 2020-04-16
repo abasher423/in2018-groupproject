@@ -19,7 +19,9 @@
                                     <li v-if="transaction.customer">Customer: {{transaction.customer.fullName}}</li>
                                     <li>Paid: {{transaction.paid}} 
                                         <div>
-                                            <Payment :transaction="transaction" v-if="transaction.paid === 'No'"/>
+                                            <Payment @paidUpdate="onPaidUpdate" :transaction="transaction" v-if="transaction.paid === 'No'"
+                                                
+                                            />
                                         </div>
                                     </li>
                                 </ul>
@@ -28,6 +30,10 @@
                     </div>
                 </v-expansion-panel>
             </v-expansion-panels>
+            <div v-if="error != null">
+                  <v-icon>info</v-icon>
+                  {{error}}
+            </div>
         </v-app>
     </div>
 </template>
@@ -44,10 +50,36 @@ export default {
         return {
             transactions: null,
             unpaidOnly: false,
+            userId: null,
+            error: null
         }
     },
     async mounted() {
+        try{
         this.transactions = (await TransactionsService.index()).data.transactions
+        this.userId = this.$store.state.user.priviledge
+        } catch(error){
+            this.error = error.response.data.message
+        }
+    },
+    methods: {
+        async onPaidUpdate (transactionId, paymentType, cardType, cardNumber, date) {
+            let pairs = [{propName: "paymentType", value: null}, {propName: "cardType", value: null}, {propName: "cardNumber", value: null}, {propName: "datePaid", value: null}]
+            pairs[0].value = paymentType
+            pairs[1].value = cardType
+            pairs[2].value = cardNumber
+            pairs[3].value = date
+            try {
+                await TransactionsService.update(transactionId, pairs)
+            } catch (error) {
+                this.error = error.response.data.message
+            }
+            try{
+                this.transactions = (await TransactionsService.index()).data.transactions
+            } catch(error){
+                this.error = error.response.data.message
+            }
+        }
     }
 
 }

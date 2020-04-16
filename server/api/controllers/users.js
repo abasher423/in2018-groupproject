@@ -6,7 +6,7 @@ const User = require("../models/user");
 
 exports.users_get_all = (req, res, next) => {
     User.find()
-    .select("name priviledge _id")
+    .select("name priviledge _id uniqueNumber")
     .exec()
     .then(docs => {
       const response = {
@@ -15,6 +15,7 @@ exports.users_get_all = (req, res, next) => {
           return {
             name: doc.name,
             priviledge: doc.priviledge,
+            uniqueNumber: doc.uniqueNumber,
             _id: doc._id
           };
         })
@@ -61,7 +62,7 @@ exports.user_signup = (req, res, next) => {
               .catch(err => {
                 console.log(err);
                 res.status(500).json({
-                  error: err
+                  message: "Error creating user(Server)"
                 });
               });
           }
@@ -75,13 +76,13 @@ exports.user_login = (req, res, next) => {
     .then(user => {
       if (!user) {
         return res.status(401).json({
-          message: "Auth failed"
+          message: "Failed: password or login is incorrect"
         });
       }
       bcrypt.compare(req.body.password, user.password, (err, result) => {
         if (err) {
           return res.status(401).json({
-            message: "Auth failed"
+            message: "Failed: password or login is incorrect"
           });
         }
         if (result) {
@@ -89,7 +90,7 @@ exports.user_login = (req, res, next) => {
             {
               uniqueNumber: user.uniqueNumber,
               priviledge: user.priviledge,
-              userId: user._id
+              _id: user._id
             },
             process.env.JWT_KEY,
             {
@@ -101,19 +102,20 @@ exports.user_login = (req, res, next) => {
             token: token,
             user: {
               uniqueNumber: user.uniqueNumber,
-              priviledge: user.priviledge
+              priviledge: user.priviledge,
+              _id: user._id
             }
           });
         }
         res.status(401).json({
-          message: "Auth failed"
+          message: "Failed: password or login is incorrect"
         });
       });
     })
     .catch(err => {
       console.log(err);
       res.status(500).json({
-        error: err
+        message: "Error logging in(Server)"
       });
     });
 }

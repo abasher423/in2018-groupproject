@@ -27,7 +27,18 @@ const blankSchema = mongoose.Schema({
     dateAssigned:{
         type: Date
     },
-    coupons: [couponSchema]
+    coupons: [couponSchema],
+
+    used: {
+        type: Boolean,
+        default: function() {
+            if(this.coupons.length > 0){
+                return true 
+            } else {
+                return false
+            }
+        }
+    }
 });
 
 blankSchema.virtual('type').get(function() {
@@ -35,7 +46,7 @@ blankSchema.virtual('type').get(function() {
 });
 
 blankSchema.virtual('number').get(function() {
-    return this.uniqueNumber.slice(4);
+    return this.uniqueNumber.slice(3);
 });
 
 module.exports = mongoose.model('Blank', blankSchema);

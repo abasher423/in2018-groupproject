@@ -41,6 +41,7 @@
                     type="password"
                   />
                 </v-form>
+                <div v-if="error != null"> <v-icon>info</v-icon> {{error}} </div>
               </v-card-text>
               <v-card-actions>
                 <v-spacer />
@@ -69,7 +70,8 @@ export default {
   data () {
     return {
       uniqueNumber: '',
-      password: ''
+      password: '',
+      error: null
     }
   }, 
   methods: {
@@ -77,7 +79,8 @@ export default {
       try {
         const response = await AuthenticationService.login({
           uniqueNumber: this.uniqueNumber,
-          password: this.password
+          password: this.password,
+          _id: this._id
         })
         this.$store.dispatch('setToken', response.data.token)
         this.$store.dispatch('setUser', response.data.user)
@@ -85,7 +88,7 @@ export default {
         name: 'menu'
       })
       } catch (error){
-        this.error = error.response.data.error
+        this.error = error.response.data.message
       }
     }
   }

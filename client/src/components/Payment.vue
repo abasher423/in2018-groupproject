@@ -16,6 +16,29 @@
                     </div>
                 </v-col>
                 <v-col cols="12" sm="12">
+                  <v-dialog
+                  ref="picker"
+                  v-model="modal"
+                  :return-value.sync="date"
+                  persistent
+                  width="290px"
+                  >
+                  <template v-slot:activator="{ on }">
+                      <v-text-field
+                      v-model="date"
+                      label="Date"
+                      readonly
+                      v-on="on"
+                      ></v-text-field>
+                  </template>
+                  <v-date-picker v-model="date">
+                      <v-spacer></v-spacer>
+                      <v-btn text color="primary" @click="modal = false">Cancel</v-btn>
+                      <v-btn text color="primary" @click="$refs.picker.save(date)">OK</v-btn>
+                  </v-date-picker>
+                  </v-dialog>
+                </v-col>
+                <v-col cols="12" sm="12">
                   <v-select label="Payment Type" v-model="paymentType" required :items="['Card', 'Cash']"></v-select>
                 </v-col>
                 <v-col cols="12" sm="12">
@@ -29,6 +52,10 @@
                     required
                   ></v-text-field>
                 </v-col>
+                <div v-if="error != null">
+                  <v-icon>info</v-icon>
+                  {{error}}
+                </div>
               </v-row>
             </v-container>
           </v-card-text>
@@ -50,8 +77,10 @@ export default {
             dialog: false,
             paymentType: null,
             cardType: null,
-            cardNumber: null
-            //patch: [{propName: paymentType, value: null}, {propName: cardType, value: null}, {propName: cardNumber, value: null}]
+            cardNumber: null,
+            date: new Date().toISOString().substr(0, 10),
+            modal: false,
+            error: null
         }
     },
 
@@ -63,20 +92,13 @@ export default {
 
     methods: {
         async update() {
+          try{
             const transactionId = this.$props.transaction._id
-            let pairs = [{propName: "paymentType", value: null}, {propName: "cardType", value: null}, {propName: "cardNumber", value: null}]
-            pairs[0].value = this.paymentType
-            pairs[1].value = this.cardType
-            pairs[2].value = this.cardNumber
-            try {
-                await TransactionsService.update(transactionId, pairs)
-                this.dialog = false
-                this.$router.push({
-                    name: 'transactions',
-                })
-            } catch (err) {
-                console.log(err)
-            }
+            this.$emit('paidUpdate', transactionId, this.paymentType, this.cardType, this.cardNumber, this.date)
+            this.dialog = false
+          } catch(error){
+            this.error = error.response.data.message
+          }
         }
   },
 }

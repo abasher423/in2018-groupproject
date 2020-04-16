@@ -33,7 +33,7 @@ exports.transactions_get_all = (req, res, next) => {
                      paymentType: doc.paymentType,
                      cardNumber: doc.cardNumber,
                      cardType: doc.cardType,
-                     commision: doc.commision,
+                     commission: doc.commission,
                      taxLocal: doc.taxLocal,
                      taxOther: doc.taxOther,
                      paid: doc.paid
@@ -45,7 +45,7 @@ exports.transactions_get_all = (req, res, next) => {
      .catch(err => {
         console.log(err);
         res.status(500).json({
-            error: err
+            message: "Error retrieving transactions(Server)"
         });
      });
 }
@@ -65,7 +65,7 @@ exports.transactions_create_transaction = (req, res, next) => {
         paymentType: req.body.paymentType,
         cardNumber: req.body.cardNumber,
         cardType: req.body.cardType,
-        commision: req.body.commision,
+        commission: req.body.commission,
         taxLocal: req.body.taxLocal,
         taxOther: req.body.taxOther
     });
@@ -87,7 +87,7 @@ exports.transactions_create_transaction = (req, res, next) => {
                 paymentType: result.paymentType,
                 cardNumber: result.cardNumber,
                 cardType: result.cardType,
-                commision: result.commision,
+                commission: result.commission,
                 taxLocal: result.taxLocal,
                 taxOther: result.taxOther
             }
@@ -96,7 +96,7 @@ exports.transactions_create_transaction = (req, res, next) => {
     .catch(err => {
         console.log(err);
         res.status(500).json({
-            error: err
+            message: "Error Creating Transaction(Server)"
         })
     });   
 }
@@ -117,7 +117,36 @@ exports.transactions_get_transaction = (req, res, next) => {
         })
         .catch(err => {
             console.log(err);
-            res.status(500).json({error: err});
+            res.status(500).json({message: "Error retrieving transaction(Server)"});
+        });
+}
+
+exports.transactions_get_transaction_by_b_id = (req, res, next) => {
+    const id = req.params.blankId;
+    Transaction.findOne({blank: id})
+    .populate({ 
+        path:"blank",
+        select: "uniqueNumber advisor",
+        populate: { 
+            path: "advisor",
+            select: "name -_id uniqueNumber"
+        }
+    })
+    .populate("customer", "fullName")
+     .exec()
+     .then(doc => {
+         console.log("from the database", doc);
+         if (doc) {
+             res.status(200).json({
+                 transaction: doc,
+             });
+         } else {
+             res.status(404).json({message: 'No valid entry found for provided ID'});
+         }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({message: "Error retrieving transaction(Server)"});
         });
 }
 
@@ -138,7 +167,7 @@ exports.transactions_update_transaction = (req, res, next) => {
      .catch(err => {
          console.log(err);
          res.status(500).json({
-             error: err
+             message: "Error updating transaction(Server)"
          });
      });
 }

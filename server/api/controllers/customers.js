@@ -24,7 +24,7 @@ exports.customers_get_all = (req, res, next) => {
     })
     .catch(err => {
         res.status(500).json({
-          error: err
+          message: "Error retrieving customers(Server)"
         });
     });
 };
@@ -54,7 +54,7 @@ exports.customers_create_customer = (req, res, next) => {
         .catch(err => {
           console.log(err);
           res.status(500).json({
-            error: err
+            message: "Error creating customer(Server)"
           });
         });
 }
@@ -77,7 +77,7 @@ exports.customers_get_customer = (req, res, next) => {
     })
     .catch(err => {
         console.log(err);
-        res.status(500).json({ error: err });
+        res.status(500).json({ message: "Error retrieving customer(Server)" });
     });
 }
 exports.customers_update_customer = (req, res, next) => {
@@ -96,7 +96,7 @@ exports.customers_update_customer = (req, res, next) => {
         .catch(err => {
             console.log(err);
             res.status(500).json({
-                error: err
+              message: "Error updating customer(Server)"
             });
         });
 }

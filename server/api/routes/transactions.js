@@ -10,6 +10,8 @@ router.post("/", transactionsController.transactions_create_transaction);
 
 router.get("/:transactionId", transactionsController.transactions_get_transaction);
 
+router.get("/getByBlankId/:blankId", transactionsController.transactions_get_transaction_by_b_id);
+
 router.patch("/:transactionId", transactionsController.transactions_update_transaction);
 
 router.delete("/:transactionId", transactionsController.transactions_delete_transaction);

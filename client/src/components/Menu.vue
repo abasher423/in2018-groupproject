@@ -9,13 +9,21 @@
                         block
                         color="primary"
                         class="ma-2"
+                        v-if="$store.state.user.priviledge === 'Advisor'"
+                        :to="{
+                            name: 'newsale'
+                        }"
                         >New Sale
                     </v-btn>
                     
                     <v-btn 
                         block
+                        v-if="$store.state.user.priviledge != 'Advisor'"
                         color="primary"
                         class="ma-2"
+                        :to="{
+                            name: 'blanks'
+                        }"
                         >Blank Stock
                     </v-btn>
             
@@ -45,7 +53,18 @@
                         block
                         color="primary"
                         class="ma-2"
+                        :to="{
+                            name: 'users'
+                        }"
                         >Users
+                    </v-btn>
+
+                    <v-btn
+                        v-if="$store.state.user.priviledge === 'Manager'"
+                        block
+                        color="primary"
+                        class="ma-2"
+                        >Commission
                     </v-btn>
 
                     <v-btn
