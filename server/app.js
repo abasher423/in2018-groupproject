@@ -9,6 +9,7 @@ const customerRoutes = require("./api/routes/customers");
 const blankRoutes = require("./api/routes/blanks");
 const userRoutes = require("./api/routes/users");
 const transactionRoutes = require("./api/routes/transactions");
+const commisionRoutes = require("./api/routes/commission");
 
 mongoose.connect(
     process.env.MONGO_ATLAS_ADDR,
@@ -44,6 +45,8 @@ app.use("/customers", customerRoutes);
 app.use("/blanks", blankRoutes);
 app.use("/users", userRoutes);
 app.use("/transactions", transactionRoutes);
+app.use("/commission", commisionRoutes);
+
 
 app.use((req, res, next) => {
   const error = new Error("Not found");
