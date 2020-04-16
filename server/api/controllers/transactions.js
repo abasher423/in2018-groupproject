@@ -33,7 +33,7 @@ exports.transactions_get_all = (req, res, next) => {
                      paymentType: doc.paymentType,
                      cardNumber: doc.cardNumber,
                      cardType: doc.cardType,
-                     commision: doc.commision,
+                     commission: doc.commission,
                      taxLocal: doc.taxLocal,
                      taxOther: doc.taxOther,
                      paid: doc.paid
@@ -65,7 +65,7 @@ exports.transactions_create_transaction = (req, res, next) => {
         paymentType: req.body.paymentType,
         cardNumber: req.body.cardNumber,
         cardType: req.body.cardType,
-        commision: req.body.commision,
+        commission: req.body.commission,
         taxLocal: req.body.taxLocal,
         taxOther: req.body.taxOther
     });
@@ -87,7 +87,7 @@ exports.transactions_create_transaction = (req, res, next) => {
                 paymentType: result.paymentType,
                 cardNumber: result.cardNumber,
                 cardType: result.cardType,
-                commision: result.commision,
+                commission: result.commission,
                 taxLocal: result.taxLocal,
                 taxOther: result.taxOther
             }

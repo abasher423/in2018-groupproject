@@ -9,5 +9,8 @@ export default {
     },
     getSingleByBlank(blankId){
         return Api().get(`/transactions/getByBlankId/${blankId}`)
+    },
+    create(transaction){
+        return Api().post('/transactions', transaction)
     }
 }

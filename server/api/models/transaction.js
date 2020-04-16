@@ -51,7 +51,7 @@ const transactionSchema = mongoose.Schema({
             return this.paymentType === 'Card';
         }
     },
-    commision: {
+    commission: {
         type: Number,
         required: true,
         min: 0,
