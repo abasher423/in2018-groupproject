@@ -11,11 +11,11 @@
             <v-container>
               <v-row>
                 <v-col>
-                    <div>
-                        <p class="text-left headline">interline</p>
-                        <v-text-field label='Text' v-model="interlineText"></v-text-field>
-                        <p class="text-left headline">domestic</p>
-                        <v-text-field label='Text' v-model="domesticText"></v-text-field>
+                    <div v-for="commissions in commission" :key="commissions.interline">
+                        <p class="text-left headline" >Interlines: {{commissions.interline}}</p>
+                        <v-text-field label='Edit Rate' v-model="interlineText"></v-text-field>
+                        <p class="text-left headline">Domestic: {{commissions.domestic}}</p>
+                        <v-text-field label='Edit Rate' v-model="domesticText"></v-text-field>
                         <v-btn dark color='#2196F3'>Save</v-btn>
                         <v-btn dark color='#2196F3'>Close</v-btn>
                     </div>
@@ -41,7 +41,7 @@ export default {
     },
     data(){
         return {
-            commission: null,
+            commission: [],
             dialog: false,
             interlineText: '',
             domesticText: ''
