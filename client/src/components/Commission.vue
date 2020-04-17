@@ -12,8 +12,19 @@
               <v-row>
                 <v-col>
                     <div>
-                        <p class="text-left headline">interline: interline}</p>
+                        <p class="text-left headline">interline</p>
+                        <v-text-field label='Text' v-model="interlineText"></v-text-field>
+                        <p class="text-left headline">domestic</p>
+                        <v-text-field label='Text' v-model="domesticText"></v-text-field>
+                        <v-btn dark color='#2196F3'>Save</v-btn>
+                        <v-btn dark color='#2196F3'>Close</v-btn>
                     </div>
+                    
+
+                    <div>
+                        
+                    </div>
+                    
                 </v-col>
               </v-row>
             </v-container>
@@ -30,7 +41,10 @@ export default {
     },
     data(){
         return {
-            commission: null
+            commission: null,
+            dialog: false,
+            interlineText: '',
+            domesticText: ''
         }
     },
     async mounted() {
