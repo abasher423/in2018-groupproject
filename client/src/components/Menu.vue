@@ -58,6 +58,7 @@
                         }"
                         >Users
                     </v-btn>
+                    <Commission ></Commission>
 
                     <v-btn
                         v-if="$store.state.user.priviledge === 'Manager'"
@@ -82,7 +83,16 @@
 
 
 <script>
+import Commission from '@/components/Commission'
 export default {
+    components: {
+        Commission
+    },
+    data() {
+        return {
+            
+        }
+    }
 }
 </script>
 
