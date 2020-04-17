@@ -58,15 +58,17 @@
                         }"
                         >Users
                     </v-btn>
-                    <Commission ></Commission>
+                    <Commission v-if="$store.state.user.priviledge === 'Manager'"
+                        block>
+                    </Commission>
 
-                    <v-btn
+                    <!-- <v-btn
                         v-if="$store.state.user.priviledge === 'Manager'"
                         block
                         color="primary"
                         class="ma-2"
                         >Commission
-                    </v-btn>
+                    </v-btn> -->
 
                     <v-btn
                         block
@@ -90,7 +92,7 @@ export default {
     },
     data() {
         return {
-            
+
         }
     }
 }
