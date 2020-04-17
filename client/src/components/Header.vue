@@ -12,7 +12,8 @@
     </v-toolbar-title>
 
     <v-spacer></v-spacer> 
-    <v-toolbar-title class="white--text">AirVia</v-toolbar-title>
+    <v-toolbar-title class="white--text" >AirVia</v-toolbar-title>
+    <v-icon large dark>flight_takeoff</v-icon>
 
     <v-spacer></v-spacer>
 
