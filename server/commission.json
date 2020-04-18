@@ -1,8 +1,6 @@
 {
-    "commission" : [
-        {
-            "interline": 0.04,
-            "domestic": 0.05
-        }
-    ]
+  "commission": {
+    "interlines": "0.09",
+    "domestic": "0.10"
+  }
 }
