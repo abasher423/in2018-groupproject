@@ -11,15 +11,15 @@
             <v-container>
               <v-row>
                 <v-col>
-                    <div v-for="commissions in commission" :key="commissions.interline">
-                        <p class="text-left headline" >{{commissions.interline}}</p>
+                    <div>
+                        <p class="text-left headline" >{{this.interlines}}</p>
                         <v-text-field label='change interlines rate' v-model="interlineText"></v-text-field>
-                        <p class="text-left headline">{{commissions.domestic}}</p>
+                        
+                    </div>
+                      <p class="text-left headline">{{this.domestic}}</p>
                         <v-text-field label='change domestic rate' v-model="domesticText"></v-text-field>
                         <v-btn dark color='#2196F3'>Save</v-btn>
                         <v-btn dark color='#2196F3'>Close</v-btn>
-                    </div>
-                    
 
                     <div>
                         
@@ -48,7 +48,9 @@ export default {
         }
     },
     async mounted() {
-        this.commission = (await CommissionService.index()).data.commission
+        this.interlines = (await CommissionService.index()).data.interlines
+        this.domestic = (await CommissionService.index()).data.domestic
+        console.log(this.commission)
     }
 
 }
