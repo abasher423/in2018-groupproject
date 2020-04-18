@@ -187,3 +187,59 @@ exports.transactions_delete_transaction = (req, res, next) => {
          })
      })
 }
+
+exports.transactions_get_discount = (req, res, next) => {
+    const custId = req.params.customerId
+    let end = moment().endOf('day')
+    
+    let start = moment(end).subtract(1, 'months')
+    // end today
+    
+    Transaction.find({
+        customer: custId,
+        date: {
+        $gte: start.toDate(),
+        $lte: end.toDate()
+      }})
+        .exec()
+        .then(docs => {
+            let sum = 0
+            for(let sale of docs){
+                if(sale.currency === 'USD'){
+                    sum += sale.amount
+                } else {
+                    sum += (sale.amount / sale.conversionRate)
+                }
+            }
+            const response = {
+                total: sum,
+                count: docs.length,
+                transactions: docs.map(doc => {
+                    return {
+                        _id: doc._id,
+                        date: moment(doc.date).format('MMMM Do YYYY'),
+                        currency: doc.currency,
+                        amount: doc.amount,
+                        conversionRate: doc.conversionRate,
+                        blank: doc.blank,
+                        customer: doc.customer,
+                        datePaid: doc.datePaid,
+                        paymentType: doc.paymentType,
+                        cardNumber: doc.cardNumber,
+                        cardType: doc.cardType,
+                        commission: doc.commission,
+                        taxLocal: doc.taxLocal,
+                        taxOther: doc.taxOther,
+                        paid: doc.paid
+                    }
+                })
+            }
+            res.status(200).json(response);
+        })
+        .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            message: "Error retrieving transactions(Server)"
+        });
+    });
+}
