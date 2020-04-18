@@ -12,10 +12,10 @@
               <v-row>
                 <v-col>
                     <div v-for="commissions in commission" :key="commissions.interline">
-                        <p class="text-left headline" >Interlines: {{commissions.interline}}</p>
-                        <v-text-field label='Edit Rate' v-model="interlineText"></v-text-field>
-                        <p class="text-left headline">Domestic: {{commissions.domestic}}</p>
-                        <v-text-field label='Edit Rate' v-model="domesticText"></v-text-field>
+                        <p class="text-left headline" >{{commissions.interline}}</p>
+                        <v-text-field label='change interlines rate' v-model="interlineText"></v-text-field>
+                        <p class="text-left headline">{{commissions.domestic}}</p>
+                        <v-text-field label='change domestic rate' v-model="domesticText"></v-text-field>
                         <v-btn dark color='#2196F3'>Save</v-btn>
                         <v-btn dark color='#2196F3'>Close</v-btn>
                     </div>
