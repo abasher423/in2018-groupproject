@@ -117,7 +117,8 @@
                                     <span class="headline"> Associated Transaction</span>
                                      <div class="text-justify subtitle-1">
                                         <ul style="list-style-type:none;">
-                                            <li>Customer: {{transaction.customer.fullName}}</li>
+                                            <li v-if="transaction.customer != null">Customer: {{transaction.customer.fullName}}</li>
+                                             <li v-else>Customer: Casual Customer</li>
                                         </ul>
                                     </div>
                                     </div>
