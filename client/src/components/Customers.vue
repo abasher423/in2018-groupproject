@@ -14,40 +14,75 @@
                             <div class="text-justify subtitle-1">
                                 <ul style="list-style-type:none;">
                                     <li>Customer Name: {{customer.fullName}}</li>
-                                     <li>Status: {{customer.status}}</li>
-                                    <li v-if="customer.phone">Phone No: {{customer.phone}}</li>
-                                    <li v-if="customer.discount">Discount: {{customer.discount}}</li>
-                                    <div v-if="customer.lateOnPayment === true">
-                                        <v-snackbar color='#2196F3' :timeout=0 v-model="snackbar">
-                                            <span>{{customer.fullName}} is late on payment</span>
-                                            <v-btn dark color='#2196F3' @click="snackbar = false">close</v-btn>
-                                        </v-snackbar>
-                                    </div>
+                                    <li>Status: {{customer.status}}</li>
+                                    <li v-if="customer.discount">
+                                        <Discount  @discountUpdate="onDiscountUpdate" :customer="customer" /> 
+                                    </li>
                                 </ul>
                             </div>
+                           
                         </v-expansion-panel-content>
                     </div>
                 </v-expansion-panel>
             </v-expansion-panels>
+            <v-snackbar-queue
+            :items="items"
+            :timeout="timeout"
+            @remove="removeItem"
+            ></v-snackbar-queue>
         </v-app>
     </div>
 </template>
 
-
 <script>
 import CustomersService from '@/services/CustomersService'
+import Discount from '@/components/Discount'
+import _ from 'lodash'
 export default {
     components: {
+        Discount
     },
     data(){
         return {
             customers: null,
-            snackbar: true
+            id: 0,
+            items: [],
+            timeout: 300000,
+            discounts: [],
+            //snackbar: true
         }
     },
     async mounted() {
         this.customers = (await CustomersService.index()).data.customers
-    }
+        
+        for(let customer of this.customers){
+            if(customer.lateOnPayment){
+                this.addItem(customer)
+            }
+        }
+    },
+    methods: {
+		    addItem (customer) {
+		        const vm = this
+		        vm.id++
+		        vm.items.push({
+		            id: vm.id,
+		            color: 'info',
+		            message: `${customer.fullName} is late on payment`
+		        })  
+		    },
+		    removeItem (id) {
+		        const vm = this
+		        const index = _.findIndex(vm.items, {id})
+		        
+		        if (index !== -1) {
+		            vm.items.splice(index, 1)
+		        }   
+            },
+            async onDiscountUpdate(){
+                this.customers = (await CustomersService.index()).data.customers
+            }
+ 		}
 
 }
 </script>

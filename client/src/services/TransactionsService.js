@@ -12,5 +12,8 @@ export default {
     },
     create(transaction){
         return Api().post('/transactions', transaction)
+    },
+    getDiscount(customer){
+        return Api().get(`/transactions/calculateDiscount/${customer}`)
     }
 }
