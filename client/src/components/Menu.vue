@@ -62,6 +62,10 @@
                         block>
                     </Commission>
 
+                    <CommissionEdit v-if="$store.state.user.priviledge === 'Manager'"
+                        block>
+                    </CommissionEdit>
+
                     <!-- <v-btn
                         v-if="$store.state.user.priviledge === 'Manager'"
                         block
@@ -86,9 +90,11 @@
 
 <script>
 import Commission from '@/components/Commission'
+import CommissionEdit from '@/components/CommissionEdit'
 export default {
     components: {
-        Commission
+        Commission,
+        CommissionEdit
     },
     data() {
         return {

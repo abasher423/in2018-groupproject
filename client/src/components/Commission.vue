@@ -11,20 +11,13 @@
             <v-container>
               <v-row>
                 <v-col>
-                    <div>
-                        <p class="text-left headline" >{{this.interlines}}</p>
-                        <v-text-field label='change interlines rate' v-model="interlineText"></v-text-field>
-                        
-                    </div>
-                      <p class="text-left headline">{{this.domestic}}</p>
-                        <v-text-field label='change domestic rate' v-model="domesticText"></v-text-field>
-                        <v-btn dark color='#2196F3'>Save</v-btn>
-                        <v-btn dark color='#2196F3'>Close</v-btn>
-
-                    <div>
-                        
-                    </div>
-                    
+                  <v-list v-for=" (value, name) in commission" :key="name">
+                    <v-list-item-content>
+                      <v-list class="text-left">{{name}}</v-list>
+                      
+                    </v-list-item-content>
+                            
+                  </v-list>
                 </v-col>
               </v-row>
             </v-container>
@@ -41,16 +34,15 @@ export default {
     },
     data(){
         return {
-            commission: [],
+            commission: null,
             dialog: false,
             interlineText: '',
             domesticText: ''
         }
     },
     async mounted() {
-        this.interlines = (await CommissionService.index()).data.interlines
-        this.domestic = (await CommissionService.index()).data.domestic
-        console.log(this.commission)
+        this.commission = (await CommissionService.index()).data
+        //console.log(this.commission)
     }
 
 }

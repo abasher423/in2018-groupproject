@@ -17,29 +17,16 @@ router.get("/", function(req, res){
 }) 
 
 router.post("/", function(req, res){
+    console.log(req.body)
     try{
         const fileName = path.resolve("server",'../commission.json');
-        const file = require(fileName);
-
-        const customer = {
-            name: "Newbie Co.",
-            order_count: 0,
-            address: "Po Box City",
-        }
-
-        var data = '{"persons":[{"name":"John","city":"New York"},{"name":"Phil","city":"Ohio"}]}';
-        
-     //   file.get(404) = req.body.interlines; //file.404, file("404") ? 
-    //    file.get(444) = req.body.domestic;
-        var datajson = JSON.stringify(data, null, 4);
-        consol
-
-        fs.writeFile(fileName, JSON.stringify(cus, null, 2), function(err){
+        fs.writeFile(fileName, JSON.stringify(req.body, null, 2), function(err){
             if (err){
                 return console.log(err);
             }
             console.log("the file was saved");
             res.status(200).json();
+            console.log(req.body);
         });
     } catch(err){
         res.status(500).json({
