@@ -5,27 +5,31 @@
         </template>
         <v-card>
           <v-card-title>
-            <span class="headline">Eddit Commission Rates</span>
+            <span class="headline">Edit Commission Rates</span>
           </v-card-title>
           <v-card-text>
             <v-container>
               <v-row>
                 <v-col>
+                    <div>
+                        <p class="text-left headline">Rates</p>
+                    </div>
                      <v-text-field v-for="(value, key) in formData" :key="key"
-                          v-bind:label="key" v-model.number="formData[key]"
+                          v-bind:label=" 'Blank Type - '+key" v-model.number="formData[key]"
                           ></v-text-field>
+
+                        <v-card-actions>
+                            <v-btn color="primary"  
+                            @click="editCommission"
+                            >Save</v-btn>
+                            <v-btn color="primary"  @click="dialog = false">Close</v-btn>
+                        </v-card-actions>
 
                 </v-col>
               </v-row>
             </v-container>
           </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-             <v-btn color="primary"  
-            @click="editCommission"
-            >Save</v-btn>
-            <v-btn color="primary"  @click="dialog = false">Close</v-btn>
-          </v-card-actions>
+         
         </v-card>
       </v-dialog>
 </template>
