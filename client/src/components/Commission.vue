@@ -16,7 +16,7 @@
                 </tr>
               </tbody>
               <div>
-                 <CommissionEdit ></CommissionEdit>
+                 <CommissionEdit></CommissionEdit>
               </div>
             </template>
           </v-simple-table>
@@ -43,7 +43,7 @@ export default {
     },
     async mounted() {
         this.commission = (await CommissionService.index()).data
-        console.log(this.commission)
+       // console.log(this.commission)
     }
 
 }

@@ -1,8 +1,9 @@
 <template>
     <v-dialog v-model="dialog" persistent max-width="600px">
         <template v-slot:activator="{ on }">
-          <v-btn color="primary" block class="ma-2" dark v-on="on">Edit Commission</v-btn>
+          <v-btn color="primary"  dark v-on="on">Edit Commission</v-btn>
         </template>
+
         <v-card>
           <v-card-title>
             <span class="headline">Edit Commission Rates</span>
@@ -14,11 +15,12 @@
                     <div>
                         <p class="text-left headline">Rates</p>
                     </div>
-                     <v-text-field v-for="(value, key) in formData" :key="key"
-                          v-bind:label=" 'Blank Type - '+key" v-model.number="formData[key]"
-                          ></v-text-field>
 
-                        <v-card-actions>
+                     <v-text-field v-for="(value, key) in formData" :key="key"
+                         v-bind:label=" 'Blank Type - '+key" v-model.number="formData[key]"
+                    ></v-text-field>
+
+                        <v-card-actions>                           
                             <v-btn color="primary"  
                             @click="editCommission"
                             >Save</v-btn>
@@ -53,7 +55,6 @@ export default {
                 451: null,
                 452: null
             }
-
         }
     },
     async mounted() {
@@ -63,6 +64,9 @@ export default {
         async editCommission(){
             try{
                await CommissionService.create(this.formData);
+               this.$router.push({
+        name: 'menu'
+      })
                
             }
            catch(error){
