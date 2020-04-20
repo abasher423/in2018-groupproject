@@ -12,18 +12,19 @@
               <v-row>
                 <v-col>
                      <v-text-field v-for="(value, key) in formData" :key="key"
-                          label="Card Type" v-model.number="formData[key]"
+                          v-bind:label="key" v-model.number="formData[key]"
                           ></v-text-field>
 
-                  
                 </v-col>
               </v-row>
             </v-container>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
+             <v-btn color="primary"  
+            @click="editCommission"
+            >Save</v-btn>
             <v-btn color="primary"  @click="dialog = false">Close</v-btn>
-            <v-btn color="primary"  @click="editCommission">Save</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -58,6 +59,7 @@ export default {
         async editCommission(){
             try{
                await CommissionService.create(this.formData);
+               
             }
            catch(error){
             console.log(error.response)

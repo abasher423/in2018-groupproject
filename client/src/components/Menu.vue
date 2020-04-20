@@ -58,21 +58,17 @@
                         }"
                         >Users
                     </v-btn>
-                    <Commission v-if="$store.state.user.priviledge === 'Manager'"
-                        block>
-                    </Commission>
 
-                    <CommissionEdit v-if="$store.state.user.priviledge === 'Manager'"
-                        block>
-                    </CommissionEdit>
-
-                    <!-- <v-btn
+                    <v-btn
                         v-if="$store.state.user.priviledge === 'Manager'"
                         block
                         color="primary"
                         class="ma-2"
+                        :to="{
+                            name: 'commission'
+                        }"
                         >Commission
-                    </v-btn> -->
+                    </v-btn>
 
                     <v-btn
                         block
@@ -89,12 +85,8 @@
 
 
 <script>
-import Commission from '@/components/Commission'
-import CommissionEdit from '@/components/CommissionEdit'
 export default {
     components: {
-        Commission,
-        CommissionEdit
     },
     data() {
         return {

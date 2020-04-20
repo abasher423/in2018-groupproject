@@ -1,48 +1,49 @@
 <template>
-    <v-dialog v-model="dialog" persistent max-width="600px">
-        <template v-slot:activator="{ on }">
-          <v-btn color="primary" block class="ma-2" dark v-on="on">Commission</v-btn>
-        </template>
-        <v-card>
-          <v-card-title>
-            <span class="headline">Commission Rates</span>
-          </v-card-title>
-          <v-card-text>
-            <v-container>
-              <v-row>
-                <v-col>
-                  <v-list v-for=" (value, name) in commission" :key="name">
-                    <v-list-item-content>
-                      <v-list class="text-left">{{name}}</v-list>
-                      
-                    </v-list-item-content>
-                            
-                  </v-list>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-card-text>
-        </v-card>
-      </v-dialog>
+    <div id="customers">
+        <v-app class="text-justify">
+            <v-simple-table>
+            <template v-slot:default>
+              <thead>
+                <tr>
+                  <th class="text-left">Blank Type</th>
+                  <th class="text-left">Commission Rate</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(value,name) in commission" :key="name">
+                  <td>{{name}}</td>
+                  <td>{{value}}</td>
+                </tr>
+              </tbody>
+              <div>
+                 <CommissionEdit ></CommissionEdit>
+              </div>
+            </template>
+          </v-simple-table>
+        </v-app>
+    </div>
+    <!-- <v-list v-for=" (value, name) in commission" :key="name"> -->
 </template>
+
 
 
 <script>
 import CommissionService from '@/services/CommissionService'
+import CommissionEdit from '@/components/CommissionEdit'
 export default {
     components: {
+      CommissionEdit
     },
     data(){
         return {
             commission: null,
-            dialog: false,
             interlineText: '',
             domesticText: ''
         }
     },
     async mounted() {
         this.commission = (await CommissionService.index()).data
-        //console.log(this.commission)
+        console.log(this.commission)
     }
 
 }
