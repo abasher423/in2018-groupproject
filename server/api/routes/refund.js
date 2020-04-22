@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.post("/", function(req, res){
     const fileName = path.resolve("server",'../refundlog.json');
+    console.log(req.body);
 
     fs.readFile(fileName, 'utf8', function readFileCallback(err, data){
         if (err){

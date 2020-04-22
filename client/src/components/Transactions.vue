@@ -19,15 +19,19 @@
                                     <li v-if="transaction.customer">Customer: {{transaction.customer.fullName}}</li>
                                     <li>Paid: {{transaction.paid}} 
                                         <div>
-                                            <Payment @paidUpdate="onPaidUpdate" :transaction="transaction" v-if="transaction.paid === 'No'"    
-                                            />
+                                    
                                             
                                         </div>
                                         <div>
                                             <Refund></Refund>
                                         </div>
                                         <div v-if="transaction.refunded === false">
-                                            <v-btn color="primary"  dark v-model="refund">Refund</v-btn>
+                                            <v-btn 
+                                            color="primary"  
+                                            dark 
+                                            v-model="refund"
+                                            @click="refundlog"
+                                            >Refund</v-btn>
                                         </div>
                                     </li>
                                 </ul>
@@ -60,12 +64,16 @@ export default {
             unpaidOnly: false,
             userId: null,
             error: null,
-            refund: null
+            refund: null,
+          //  blankNumber: null
         }
     },
     async mounted() {
         try{
         this.transactions = (await TransactionsService.index()).data.transactions
+        let blankNumber = (await TransactionsService.index()).data.transactions.blank.uniqueNumber
+        //this.blankNumber = this.transactions.blank.uniqueNumber
+        console.log(blankNumber)
         this.userId = this.$store.state.user.priviledge
         } catch(error){
             this.error = error.response.data.message
@@ -87,6 +95,20 @@ export default {
                 this.transactions = (await TransactionsService.index()).data.transactions
             } catch(error){
                 this.error = error.response.data.message
+            }
+        },
+        async refundlog(){
+            try{
+               await RefundService.create(this.transactions.blank.advisor.name, this.transactions.amount);
+               console.log(this.transactions.blank.uniqueNumber)   
+               console.log(this.transactions.amount)   
+        //        this.$router.push({
+        // name: 'menu'
+        // })
+                
+                }
+            catch(error){
+                console.log(error.response)
             }
         }
     }
