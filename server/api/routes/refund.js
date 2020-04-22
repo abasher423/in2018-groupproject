@@ -3,19 +3,6 @@ const fs = require('fs');
 const path = require('path')
 const router = express.Router();
 
-
-
-router.get("/", function(req, res){
-    try{
-        let comms = JSON.parse(fs.readFileSync(path.resolve("server",'../refundlog.json')))
-        res.status(200).json(comms);
-    } catch(err){
-        res.status(500).json({
-            message: "Error retrieving commission(Server)"
-        });
-    }
-}) 
-
 router.post("/", function(req, res){
     const fileName = path.resolve("server",'../refundlog.json');
 
