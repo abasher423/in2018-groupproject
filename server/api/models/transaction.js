@@ -65,6 +65,10 @@ const transactionSchema = mongoose.Schema({
     taxOther: {
         type: Number,
         required: true
+    },
+    refunded: {
+        type: Boolean,
+        default: false
     }
 });
 

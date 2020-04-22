@@ -36,7 +36,8 @@ exports.transactions_get_all = (req, res, next) => {
                      commission: doc.commission,
                      taxLocal: doc.taxLocal,
                      taxOther: doc.taxOther,
-                     paid: doc.paid
+                     paid: doc.paid,
+                     refunded: doc.refunded
                  }
              })
          }
