@@ -19,9 +19,15 @@
                                     <li v-if="transaction.customer">Customer: {{transaction.customer.fullName}}</li>
                                     <li>Paid: {{transaction.paid}} 
                                         <div>
-                                            <Payment @paidUpdate="onPaidUpdate" :transaction="transaction" v-if="transaction.paid === 'No'"
-                                                
+                                            <Payment @paidUpdate="onPaidUpdate" :transaction="transaction" v-if="transaction.paid === 'No'"    
                                             />
+                                            
+                                        </div>
+                                        <div>
+                                            <Refund></Refund>
+                                        </div>
+                                        <div v-if="transaction.refunded === false">
+                                            <v-btn color="primary"  dark v-model="refund">Refund</v-btn>
                                         </div>
                                     </li>
                                 </ul>
@@ -42,16 +48,19 @@
 <script>
 import TransactionsService from '@/services/TransactionsService'
 import Payment from '@/components/Payment'
+import Refund from '@/components/Refund'
 export default {
     components: {
-        Payment
+        Payment,
+        Refund
     },
     data(){
         return {
             transactions: null,
             unpaidOnly: false,
             userId: null,
-            error: null
+            error: null,
+            refund: null
         }
     },
     async mounted() {
