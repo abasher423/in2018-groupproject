@@ -64,6 +64,9 @@
                         block
                         color="primary"
                         class="ma-2"
+                        :to="{
+                            name: 'commission'
+                        }"
                         >Commission
                     </v-btn>
 
@@ -83,6 +86,13 @@
 
 <script>
 export default {
+    components: {
+    },
+    data() {
+        return {
+
+        }
+    }
 }
 </script>
 
