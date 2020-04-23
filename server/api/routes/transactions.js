@@ -16,5 +16,6 @@ router.patch("/:transactionId", transactionsController.transactions_update_trans
 
 router.delete("/:transactionId", transactionsController.transactions_delete_transaction);
 
+router.get("/calculateDiscount/:customerId", transactionsController.transactions_get_discount);
 
 module.exports = router;

@@ -15,7 +15,6 @@
             >
                 <v-text-field
                 v-model="amount"
-                :rules="nameRules"
                 label="Amount"
                 required
                 ></v-text-field>
@@ -161,7 +160,7 @@
                 <v-col cols="12" md="2">
                     <v-dialog v-model="paymenttoggle" persistent max-width="600px">
                         <template v-slot:activator="{ on }">
-                            <v-btn color="primary" block v-on="on">Proceed to Payment</v-btn>
+                            <v-btn color="primary" block @click="proceed" v-on="on">Proceed to Payment</v-btn>
                         </template>
                         <v-card>
                             <v-card-title>
@@ -172,11 +171,12 @@
                                 <v-row>
                                     <v-col>
                                         <div>
+                                            <p v-if="discount != 0" class="text-left headline">Discount: {{discount}}%</p>
                                             <p class="text-left headline">Amount: {{amount}} {{currency}}</p>
                                         </div>
                                     </v-col>
                                     <v-col cols="12" sm="12">
-                                    <v-select label="Payment Type" v-model="paymentType" required :items="['Card', 'Cash', 'Delayed']"></v-select>
+                                    <v-select label="Payment Type" v-model="paymentType" required :items="paymentTypes"></v-select>
                                     </v-col>
                                     <v-col cols="12" sm="12">
                                     <v-text-field v-if="paymentType === 'Card'" v-model="cardNumber" label="Card Number"></v-text-field>
@@ -198,7 +198,7 @@
                             </v-card-text>
                             <v-card-actions>
                                 <v-spacer></v-spacer>
-                                <v-btn color="primary"  @click="paymenttoggle = false">Close</v-btn>
+                                <v-btn color="primary"  @click="closePayment">Close</v-btn>
                                 <v-btn color="primary"  @click="saveTransaction">Save</v-btn>
                             </v-card-actions>
                         </v-card>
@@ -234,6 +234,7 @@ data: () => ({
     counter: 4,
     coupons: [],
     paymenttoggle: false,
+    paymentTypes: [],
     paymentType: null,
     cardNumber: null,
     cardType: null,
@@ -243,10 +244,7 @@ data: () => ({
     errorPay: null,
     errormount: null,
     errorupdate: null,
-
-    nameRules: [
-      v => !!v || 'Name is required',
-    ],
+    discount: 0,
   }),
     async mounted() {
         try{
@@ -290,8 +288,29 @@ data: () => ({
         this.errorupdate = null
       },
 
-      proceed () {
+      async proceed () {
+          let sum = 0
+          let customer = null
+          if(this.customer != 'Casual Customer'){
+                this.paymentTypes = ['Card', 'Cash', 'Delayed']
+                customer = this.customersId[this.customers.indexOf(this.customer) - 1]
+                
+                sum = (await TransactionsService.getDiscount(customer)).data.total
+                let cust = (await CustomersService.getById(customer)).data.customer
+                if(cust.discount && !cust.lateOnPayment){
+                    let discount = 0
+                    for(let band in cust.discount){
+                        if(sum >= band){
+                            discount = cust.discount[band]
+                        }
+                    }
 
+                    this.amount = this.amount * ((100 - discount)/100)
+                    this.discount = discount
+                }
+            } else {
+                this.paymentTypes = ['Card', 'Cash']
+            }
       },
 
       async saveTransaction(){
@@ -337,6 +356,13 @@ data: () => ({
           } catch (error){
               this.errorPay = error.response.data.message
           }
+      },
+      closePayment(){
+          this.paymenttoggle = false
+          this.paymentTypes = []
+          this.amount = this.amount / ((100 - this.discount)/100)
+          this.discount = 0
+           
       }
   }
 

@@ -8,8 +8,10 @@ import { sync } from 'vuex-router-sync'
 import 'vuetify/dist/vuetify.min.css'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import store from '@/store/store'
+import VuetifySnackbarQueue from 'vuetify-snackbar-queue'
 
 Vue.use(Vuetify)
+Vue.use(VuetifySnackbarQueue)
 
 Vue.config.productionTip = false
 

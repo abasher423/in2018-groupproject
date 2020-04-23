@@ -15,5 +15,8 @@ export default {
     },
     updateRefunded(id, values){
         return Api().patch(`/transactions/${id}`, values)
+    },
+    getDiscount(customer){
+        return Api().get(`/transactions/calculateDiscount/${customer}`)
     }
 }
