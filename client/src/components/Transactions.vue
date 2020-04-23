@@ -18,19 +18,12 @@
                                     <li>Advisor: {{transaction.blank.advisor.name}}</li>
                                     <li v-if="transaction.customer">Customer: {{transaction.customer.fullName}}</li>
                                     <li>Paid: {{transaction.paid}} 
-                                        <div>
-                                    
-                                            
-                                        </div>
-                                        <div>
-                                            <Refund></Refund>
-                                        </div>
                                         <div v-if="transaction.refunded === false">
                                             <v-btn 
                                             color="primary"  
                                             dark 
                                             v-model="refund"
-                                            @click="refundlog"
+                                            @click="refundlog(transaction)"
                                             >Refund</v-btn>
                                         </div>
                                     </li>
@@ -51,33 +44,42 @@
 
 <script>
 import TransactionsService from '@/services/TransactionsService'
+import RefundService from '@/services/RefundService'
 import Payment from '@/components/Payment'
-import Refund from '@/components/Refund'
 export default {
     components: {
-        Payment,
-        Refund
+        Payment
     },
     data(){
         return {
             transactions: null,
             unpaidOnly: false,
+            added: null,
             userId: null,
             error: null,
             refund: null,
-          //  blankNumber: null
+            formData: {},
+            blankno: null,
+            amount: null
         }
     },
     async mounted() {
         try{
-        this.transactions = (await TransactionsService.index()).data.transactions
-        let blankNumber = (await TransactionsService.index()).data.transactions.blank.uniqueNumber
-        //this.blankNumber = this.transactions.blank.uniqueNumber
-        console.log(blankNumber)
+           this.transactions = (await TransactionsService.index()).data.transactions
+        // const response = await TransactionsService.index();
+        // this.transactions = response.data.transactions;
+        // console.log(transactions);
+
+        this.transactions.forEach(transaction => {
+        this.amount = transaction.amount 
+        //console.log(this.amount)
+        })
+
         this.userId = this.$store.state.user.priviledge
         } catch(error){
             this.error = error.response.data.message
         }
+           
     },
     methods: {
         async onPaidUpdate (transactionId, paymentType, cardType, cardNumber, date) {
@@ -97,15 +99,9 @@ export default {
                 this.error = error.response.data.message
             }
         },
-        async refundlog(){
+        async refundlog(transaction){
             try{
-               await RefundService.create(this.transactions.blank.advisor.name, this.transactions.amount);
-               console.log(this.transactions.blank.uniqueNumber)   
-               console.log(this.transactions.amount)   
-        //        this.$router.push({
-        // name: 'menu'
-        // })
-                
+               await RefundService.create(transaction.amount, transaction.blank.uniqueNumber)
                 }
             catch(error){
                 console.log(error.response)
