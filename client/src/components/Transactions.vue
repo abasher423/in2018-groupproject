@@ -99,7 +99,12 @@ export default {
         },
         async refundlog(transaction){
             try{
-               await RefundService.create(transaction.amount, this.date)
+               await RefundService.create(transaction.amount, transaction.blank.uniqueNumber)
+               let pairs = [{propName: "refunded", value: true}]
+               await RefundService.updateRefunded(transaction._id, pairs)
+               this.$router.push({
+                    name: 'menu'
+                })
                
                 }
             catch(error){

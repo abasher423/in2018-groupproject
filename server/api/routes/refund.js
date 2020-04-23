@@ -18,6 +18,7 @@ router.post("/", function(req, res){
         obj[blank] = amount; //add some data
         json = JSON.stringify(obj); //convert it back to json
         fs.writeFile(fileName, JSON.stringify(obj, null, 2), 'utf8', function(error){
+            res.status(200).json(obj);
             if(error){
                 return console.log(error)
             }
