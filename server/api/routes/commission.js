@@ -18,6 +18,8 @@ router.get("/", function(req, res){
 
 router.post("/", function(req, res){
     const fileName = path.resolve("server",'../commission.json');
+    console.log(req.body.type);
+    //console.log(rate);
 
     fs.readFile(fileName, 'utf8', function readFileCallback(err, data){
         if (err){
