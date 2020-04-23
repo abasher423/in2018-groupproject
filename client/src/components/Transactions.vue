@@ -18,7 +18,7 @@
                                     <li>Advisor: {{transaction.blank.advisor.name}}</li>
                                     <li v-if="transaction.customer">Customer: {{transaction.customer.fullName}}</li>
                                     <li>Paid: {{transaction.paid}} 
-                                        <div v-if="transaction.refunded === false">
+                                        <div v-if="transaction.refunded === false && transaction.paid == 'Yes'">
                                             <v-btn 
                                             color="primary"  
                                             dark 
@@ -99,9 +99,9 @@ export default {
         },
         async refundlog(transaction){
             try{
-               await RefundService.create(transaction.amount, transaction.blank.uniqueNumber)
+               await RefundService.create(this.date, transaction.blank.uniqueNumber)
                let pairs = [{propName: "refunded", value: true}]
-               await RefundService.updateRefunded(transaction._id, pairs)
+               await TransactionsService.updateRefunded(transaction._id, pairs)
                this.$router.push({
                     name: 'menu'
                 })

@@ -12,5 +12,8 @@ export default {
     },
     create(transaction){
         return Api().post('/transactions', transaction)
+    },
+    updateRefunded(id, values){
+        return Api().patch(`/transactions/${id}`, values)
     }
 }
