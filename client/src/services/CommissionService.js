@@ -3,7 +3,7 @@ export default {
     index(){
         return Api().get('/commission');
     },
-    create(formData){
-        return Api().post('/commission', formData);
+    create(type, rate){
+        return Api().post('/commission', {type, rate});
     }
 }
