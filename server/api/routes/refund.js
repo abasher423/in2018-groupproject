@@ -5,16 +5,17 @@ const router = express.Router();
 
 router.post("/", function(req, res){
     const fileName = path.resolve("server",'../refundlog.json');
-    console.log(req.body);
+    console.log(req.body.blank);
+    console.log(req.body.amount);
 
     fs.readFile(fileName, 'utf8', function readFileCallback(err, data){
         if (err){
             console.log(err);
         } else {
         obj = JSON.parse(data); //now its an object
-        country = 'somalia';
-        value = 111;
-        obj[country] = value; //add some data
+        blank = req.body.blank;
+        amount = req.body.amount;
+        obj[blank] = amount; //add some data
         json = JSON.stringify(obj); //convert it back to json
         fs.writeFile(fileName, JSON.stringify(obj, null, 2), 'utf8', function(error){
             if(error){
