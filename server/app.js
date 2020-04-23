@@ -10,6 +10,7 @@ const blankRoutes = require("./api/routes/blanks");
 const userRoutes = require("./api/routes/users");
 const transactionRoutes = require("./api/routes/transactions");
 const commisionRoutes = require("./api/routes/commission");
+const refundRoutes = require("./api/routes/refund");
 
 mongoose.connect(
     process.env.MONGO_ATLAS_ADDR,
@@ -46,6 +47,7 @@ app.use("/blanks", blankRoutes);
 app.use("/users", userRoutes);
 app.use("/transactions", transactionRoutes);
 app.use("/commission", commisionRoutes);
+app.use("/refund", refundRoutes);
 
 
 app.use((req, res, next) => {
