@@ -58,9 +58,7 @@ export default {
             userId: null,
             error: null,
             refund: null,
-            formData: {},
-            blankno: null,
-            amount: null
+            date: new Date().toISOString().substr(0, 10),
         }
     },
     async mounted() {
@@ -101,7 +99,8 @@ export default {
         },
         async refundlog(transaction){
             try{
-               await RefundService.create(transaction.amount, transaction.blank.uniqueNumber)
+               await RefundService.create(transaction.amount, this.date)
+               
                 }
             catch(error){
                 console.log(error.response)
