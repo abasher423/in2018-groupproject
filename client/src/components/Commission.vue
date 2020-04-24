@@ -1,6 +1,7 @@
 <template>
     <div id="customers">
         <v-app class="text-justify">
+          <v-container>
             <v-simple-table>
             <template v-slot:default>
               <thead>
@@ -20,6 +21,7 @@
               </div>
             </template>
           </v-simple-table>
+          </v-container>
         </v-app>
     </div>
     <!-- <v-list v-for=" (value, name) in commission" :key="name"> -->

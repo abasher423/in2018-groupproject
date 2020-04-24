@@ -1,14 +1,13 @@
 <template>
   <div id="app">
-    <v-app fluid>
+    <v-app >
       <page-header 
         v-if="$store.state.isUserLoggedIn"
       />
       <main>
       <v-content>
-          <v-container> 
+           
             <router-view/>
-          </v-container>
         </v-content>
       </main>
     </v-app>

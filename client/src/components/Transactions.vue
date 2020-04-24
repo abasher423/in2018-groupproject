@@ -1,6 +1,7 @@
 <template>
     <div id="transactions">
         <v-app class="text-justify">
+            <v-container>
             <div class="display-2">Transactions <v-switch v-model="unpaidOnly" class="ma-2" label="Show unpaid only"></v-switch> </div>
             <v-expansion-panels
                 multiple>
@@ -34,6 +35,7 @@
                   <v-icon>info</v-icon>
                   {{error}}
             </div>
+            </v-container>
         </v-app>
     </div>
 </template>

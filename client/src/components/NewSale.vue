@@ -327,7 +327,7 @@ data: () => ({
                 datePaid = this.date
             }
 
-            let commission = (await CommissionService.index()).data.interline
+            let commission = (await CommissionService.index()).data[this.type]
 
             let transaction = {
                 currency: this.currency,
