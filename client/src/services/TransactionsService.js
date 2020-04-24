@@ -13,6 +13,9 @@ export default {
     create(transaction){
         return Api().post('/transactions', transaction)
     },
+    updateRefunded(id, values){
+        return Api().patch(`/transactions/${id}`, values)
+    },
     getDiscount(customer){
         return Api().get(`/transactions/calculateDiscount/${customer}`)
     }

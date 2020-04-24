@@ -1,12 +1,12 @@
 <template>
     <v-dialog v-model="dialog" persistent max-width="600px">
         <template v-slot:activator="{ on }">
-          <v-btn color="primary"  dark v-on="on">Edit Commission</v-btn>
+          <v-btn color="primary"  dark v-on="on">Edit</v-btn>
         </template>
 
         <v-card>
           <v-card-title>
-            <span class="headline">Edit Commission Rates</span>
+            <span class="headline">Add Commission Rate</span>
           </v-card-title>
           <v-card-text>
             <v-container>
@@ -16,13 +16,13 @@
                         <p class="text-left headline">Rates</p>
                     </div>
 
-                     <v-text-field v-for="(value, key) in formData" :key="key"
-                         v-bind:label=" 'Blank Type - '+key" v-model.number="formData[key]"
-                    ></v-text-field>
+                     <v-text-field label="Blank Type" v-model="type"></v-text-field>
+                      <v-text-field label="Commission" v-model.number="rate"></v-text-field>
+                      <!-- <v-btn @click="$set(formData, newKey, newValue)">+</v-btn> -->
 
                         <v-card-actions>                           
                             <v-btn color="primary"  
-                            @click="editCommission"
+                            @click="editCommission(type,rate)"
                             >Save</v-btn>
                             <v-btn color="primary"  @click="dialog = false">Close</v-btn>
                         </v-card-actions>
@@ -46,24 +46,18 @@ export default {
         return {
              dialog: false,
              commission: null,
-            formData: {
-                444: null,
-                440: null,
-                420: null,
-                201: null,
-                101: null,
-                451: null,
-                452: null
-            }
+            type: null,
+            rate: null,
+            formData: {}
         }
     },
     async mounted() {
         
     },
     methods: {
-        async editCommission(){
+        async editCommission(type, rate){
             try{
-               await CommissionService.create(this.formData);
+               await CommissionService.create(this.type, this.rate);
                this.$router.push({
         name: 'menu'
       })
