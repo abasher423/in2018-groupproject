@@ -8,6 +8,7 @@ import BlankStock from '@/components/BlankStock'
 import NewSale from '@/components/NewSale'
 import Customers from '@/components/Customers'
 import Commission from '@/components/Commission'
+import Report from '@/components/Reports/BlankStockReport'
 
 Vue.use(Router)
 
@@ -53,6 +54,11 @@ export default new Router({
       path: '/commission',
       name: 'commission',
       component: Commission
+    },
+    {
+      path: '/report',
+      name: 'report',
+      component: Report
     }
   ]
 })
