@@ -193,13 +193,13 @@ exports.blanks_delete_blank_by_number = (req, res, next) => {
 }
 
 exports.blanks_get_report = (req, res, next) => {
-  //const id = req.params.blankId;
-  let start = moment(req.body.start, "DD-MM-YYYY").startOf('day')
-  let end = moment(req.body.end, "DD-MM-YYYY").endOf('day')
+  const dateRange = req.params.dateRange.split("!")
+  let start = moment(dateRange[0], "DD-MM-YYYY").startOf('day')
+  let end = moment(dateRange[1], "DD-MM-YYYY").endOf('day')
   let report = {
-    added: null,
+    added: [],
     assigned: null,
-    used: null,
+    used: [],
     totals: null,
   }
   const pr1 = Blank.find({
@@ -208,13 +208,11 @@ exports.blanks_get_report = (req, res, next) => {
       $lte: end.toDate()
   }})
     .select("uniqueNumber dateAdded")
+    .sort('uniqueNumber')
     .exec()
     .then(docs => {
-        report.added = docs.map(doc => {
-          return {
-            uniqueNumber: doc.uniqueNumber,
-            dateAdded: doc.dateAdded
-          };
+        docs.map(doc => {
+          report.added.push(doc.uniqueNumber)
         })
       
     })
@@ -230,10 +228,16 @@ exports.blanks_get_report = (req, res, next) => {
   }})
     .select("uniqueNumber dateAssigned advisor")
     .populate("advisor", "uniqueNumber")
+    .sort('uniqueNumber')
     .exec()
-    .then(doc => {
-      console.log("From database", doc);
-      report.assigned = doc
+    .then(docs => {
+      console.log("From database", docs);
+      report.assigned = docs.map(doc => {
+        return {
+          uniqueNumber: doc.uniqueNumber,
+          advisor: doc.advisor.uniqueNumber
+        }
+      })
     })
     .catch(err => {
       console.log(err);
@@ -248,9 +252,17 @@ exports.blanks_get_report = (req, res, next) => {
     .select("blank")
     .populate("blank", "uniqueNumber")
     .exec()
-    .then(doc => {
-      console.log("From database", doc);
-      report.used = doc
+    .then(docs => {
+      console.log("From database", docs);
+      // report.used = docs.map(doc => {
+      //   return {
+      //     uniqueNumber: doc.blank.uniqueNumber,
+      //   };
+      // })
+
+      docs.map(doc => {
+        report.used.push(doc.blank.uniqueNumber)
+      })
     })
     .catch(err => {
       console.log(err);
@@ -262,6 +274,7 @@ exports.blanks_get_report = (req, res, next) => {
     })
       .select("uniqueNumber advisor used")
       .populate("advisor", "uniqueNumber")
+      .sort("uniqueNumber")
       .exec()
       .then(doc => {
         console.log("From database", doc);
