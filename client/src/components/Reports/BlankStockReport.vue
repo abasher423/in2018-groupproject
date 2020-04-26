@@ -2,7 +2,8 @@
     <div>
         <v-app>
             <v-content>
-                <v-container fluid > 
+                <v-container fluid >
+                    <h1> Blank Stock Report</h1> 
                     <v-simple-table dense>
                         <template v-slot:default>
                             <thead>
@@ -51,7 +52,7 @@
                                 <td>{{ranges.totalsByAgents.amounts[index - 1]}}</td>
                             </tr>
 
-                            <tr class="footer">
+                            <tr id="footer">
                                 <th scope="row">Totals</th>
                                 <td></td>
                                 <td>{{ranges.added.amounts.reduce((a,b) => a + b, 0)}}</td>
@@ -82,8 +83,8 @@ export default {
     data:() => ({
         reportData: null,
         err: null,
-        datemin: "01-06-2019",
-        datemax: "22-04-2020",
+        datemin: "01-01-2020",
+        datemax: "26-04-2020",
         ranges: {
                     added: {
                                 ranges: [],
@@ -241,11 +242,11 @@ export default {
 <style scoped>
 
 table, th, td {
-    border: thin solid black;
+    border: 1px solid black;
     border-collapse: collapse;
 }
-.footer{
-    border: 2px solid black;
+#footer td{
+    border: 1px solid black;
 }
 
 </style>
