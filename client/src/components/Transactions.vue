@@ -22,12 +22,14 @@
                                         <div v-if="transaction.refunded === false && transaction.paid == 'Yes'">
                                             <v-btn 
                                             color="primary"  
-                                            dark 
+                                            dark
+                                            small 
                                             v-model="refund"
                                             @click="refundlog(transaction)"
                                             >Refund</v-btn>
                                         </div>
                                     </li>
+                                    <li v-if="transaction.paid == 'No'"><Payment @paidUpdate="onPaidUpdate" :transaction="transaction"/></li>
                                 </ul>
                             </div>
                         </v-expansion-panel-content>
@@ -68,12 +70,12 @@ export default {
            this.transactions = (await TransactionsService.index()).data.transactions
         // const response = await TransactionsService.index();
         // this.transactions = response.data.transactions;
-        // console.log(transactions);
+        console.log(this.transactions);
 
-        this.transactions.forEach(transaction => {
-        this.amount = transaction.amount 
-        //console.log(this.amount)
-        })
+        // this.transactions.forEach(transaction => {
+        // this.amount = transaction.amount 
+        // console.log(this.amount)
+        // })
 
         this.userId = this.$store.state.user.priviledge
         } catch(error){
