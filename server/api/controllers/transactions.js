@@ -244,3 +244,57 @@ exports.transactions_get_discount = (req, res, next) => {
         });
     });
 }
+
+exports.transactions_ind_dom_report = (req, res, next) => {
+    const info = req.params.info.split("!");
+    let start = moment(info[0], "DD-MM-YYYY").startOf('day')
+    let end = moment(info[1], "DD-MM-YYYY").endOf('day')
+    //let advisor = info[0]
+
+    Transaction.find({  
+        datePaid: {
+            $gte: start.toDate(),
+            $lte: end.toDate()
+        } 
+    })
+    .populate({ 
+        path:"blank",
+        select: "uniqueNumber advisor",
+        populate: { 
+            path: "advisor",
+            select: "name -_id uniqueNumber"
+        }
+    })
+     .exec()
+     .then(docs => {
+        const response = {
+            count: docs.length,
+            transactions: docs.map(doc => {
+                return {
+                    //_id: doc._id,
+                    //date: moment(doc.date).format('MMMM Do YYYY'),
+                    currency: doc.currency,
+                    amount: doc.amount,
+                    conversionRate: doc.conversionRate,
+                    blank: doc.blank,
+                    //customer: doc.customer,
+                    datePaid: doc.datePaid,
+                    paymentType: doc.paymentType,
+                    //cardNumber: doc.cardNumber,
+                    //cardType: doc.cardType,
+                    commission: doc.commission,
+                    taxLocal: doc.taxLocal,
+                    taxOther: doc.taxOther,
+                    //paid: doc.paid,
+                    //refunded: doc.refunded
+                }
+            })
+        }
+        res.status(200).json(response);
+    })
+     .catch(err => {
+         res.status(500).json({
+             error: err
+         })
+     })
+}

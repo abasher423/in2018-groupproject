@@ -18,5 +18,8 @@ export default {
     },
     getDiscount(customer){
         return Api().get(`/transactions/calculateDiscount/${customer}`)
+    },
+    getIndDomReport(info){
+        return Api().get(`/transactions/report/IndDomReport/${info}`)
     }
 }
