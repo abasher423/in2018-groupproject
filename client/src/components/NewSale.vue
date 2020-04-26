@@ -172,7 +172,7 @@
                                     <v-col>
                                         <div>
                                             <p v-if="discount != 0" class="text-left headline">Discount: {{discount}}%</p>
-                                            <p class="text-left headline">Amount: {{amount}} {{currency}}</p>
+                                            <p class="text-left headline">Amount: {{parseFloat(amount) + parseFloat(tax) + parseFloat(taxloc)}} {{currency}}</p>
                                         </div>
                                     </v-col>
                                     <v-col cols="12" sm="12">
@@ -286,6 +286,7 @@ data: () => ({
         this.errorPay = null
         this.errormount = null
         this.errorupdate = null
+        this.discount = 0
       },
 
       async proceed () {
@@ -327,7 +328,7 @@ data: () => ({
                 datePaid = this.date
             }
 
-            let commission = (await CommissionService.index()).data.interline
+            let commission = (await CommissionService.index()).data[this.type]
 
             let transaction = {
                 currency: this.currency,

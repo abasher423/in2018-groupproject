@@ -12,6 +12,8 @@ router.get("/:blankId", blanksController.blanks_get_blank);
 
 router.get("/byUniqueNo/:blankId", blanksController.blanks_get_blank_by_uniqueNo);
 
+router.get("/report/generateReport/:dateRange", blanksController.blanks_get_report);
+
 router.patch("/:blankUniqueNumber", blanksController.blanks_update_blank);
 
 router.delete("/:blankId", blanksController.blanks_delete_blank);

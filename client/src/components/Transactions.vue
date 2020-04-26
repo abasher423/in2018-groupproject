@@ -1,6 +1,7 @@
 <template>
     <div id="transactions">
         <v-app class="text-justify">
+            <v-container>
             <div class="display-2">Transactions <v-switch v-model="unpaidOnly" class="ma-2" label="Show unpaid only"></v-switch> </div>
             <v-expansion-panels
                 multiple>
@@ -21,12 +22,14 @@
                                         <div v-if="transaction.refunded === false && transaction.paid == 'Yes'">
                                             <v-btn 
                                             color="primary"  
-                                            dark 
+                                            dark
+                                            small 
                                             v-model="refund"
                                             @click="refundlog(transaction)"
                                             >Refund</v-btn>
                                         </div>
                                     </li>
+                                    <li v-if="transaction.paid == 'No'"><Payment @paidUpdate="onPaidUpdate" :transaction="transaction"/></li>
                                 </ul>
                             </div>
                         </v-expansion-panel-content>
@@ -37,6 +40,7 @@
                   <v-icon>info</v-icon>
                   {{error}}
             </div>
+            </v-container>
         </v-app>
     </div>
 </template>
@@ -66,12 +70,12 @@ export default {
            this.transactions = (await TransactionsService.index()).data.transactions
         // const response = await TransactionsService.index();
         // this.transactions = response.data.transactions;
-        // console.log(transactions);
+        console.log(this.transactions);
 
-        this.transactions.forEach(transaction => {
-        this.amount = transaction.amount 
-        //console.log(this.amount)
-        })
+        // this.transactions.forEach(transaction => {
+        // this.amount = transaction.amount 
+        // console.log(this.amount)
+        // })
 
         this.userId = this.$store.state.user.priviledge
         } catch(error){

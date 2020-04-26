@@ -40,6 +40,7 @@
 
                     <v-btn
                         block
+                        v-if="$store.state.user.priviledge === 'Manager'"
                         color="primary"
                         class="ma-2"
                         :to="{
@@ -74,7 +75,63 @@
                         block
                         color="primary"
                         class="ma-2"
+                        @click="toggle = !toggle"
                         >Reports
+                    </v-btn>
+
+                    <v-btn
+                        v-if="toggle && $store.state.user.priviledge === 'Manager'"
+                        block
+                        color="primary"
+                        class="ma-2"
+                        :to="{
+                            name: 'reportInterGl'
+                        }"
+                        >Global Inter Reports
+                    </v-btn>
+
+                    <v-btn
+                        v-if="toggle && $store.state.user.priviledge === 'Manager'"
+                        block
+                        color="primary"
+                        class="ma-2"
+                        :to="{
+                            name: 'reportDomGl'
+                        }"
+                        >Global Domestic Reports
+                    </v-btn>
+
+                    <v-btn
+                        v-if="toggle && $store.state.user.priviledge != 'Admin'"
+                        block
+                        color="primary"
+                        class="ma-2"
+                        :to="{
+                            name: 'reportInterInd'
+                        }"
+                        >Individual Inter Reports
+                    </v-btn>
+
+                    <v-btn
+                        v-if="toggle && $store.state.user.priviledge != 'Admin'"
+                        block
+                        color="primary"
+                        class="ma-2"
+                        :to="{
+                            name: 'reportDomInd'
+                        }"
+                        >Individual Domestic Reports
+                    </v-btn>
+
+                    <v-btn
+                        v-if="toggle && $store.state.user.priviledge === 'Admin'"
+                        block
+                        color="primary"
+                        class="ma-2"
+                        :to="{
+                            name: 'reportBlank'
+                        }"
+                        >Blank Stock reports
                     </v-btn>
                 </v-col>
             </v-row>
@@ -90,7 +147,7 @@ export default {
     },
     data() {
         return {
-
+            toggle: false
         }
     }
 }

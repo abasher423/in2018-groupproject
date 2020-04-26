@@ -1,6 +1,7 @@
 <template>
     <div id="customers">
         <v-app class="text-justify">
+            <v-container>
             <div class="display-2">Customers </div>
             <v-expansion-panels
                 multiple>
@@ -30,6 +31,7 @@
             :timeout="timeout"
             @remove="removeItem"
             ></v-snackbar-queue>
+            </v-container>
         </v-app>
     </div>
 </template>

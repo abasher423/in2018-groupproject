@@ -18,4 +18,6 @@ router.delete("/:transactionId", transactionsController.transactions_delete_tran
 
 router.get("/calculateDiscount/:customerId", transactionsController.transactions_get_discount);
 
+router.get("/report/IndDomReport/:info", transactionsController.transactions_ind_dom_report);
+
 module.exports = router;

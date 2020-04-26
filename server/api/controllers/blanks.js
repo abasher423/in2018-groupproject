@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
+const moment = require('moment');
 
 const Blank = require("../models/blank");
+
+const Transaciton = require("../models/transaction");
 
 exports.blanks_get_all = (req, res, next) => {
     Blank.find()
@@ -187,4 +190,114 @@ exports.blanks_delete_blank_by_number = (req, res, next) => {
       error: err
     });
   });
+}
+
+exports.blanks_get_report = (req, res, next) => {
+  const dateRange = req.params.dateRange.split("!")
+  let start = moment(dateRange[0], "DD-MM-YYYY").startOf('day')
+  let end = moment(dateRange[1], "DD-MM-YYYY").endOf('day')
+  let report = {
+    added: [],
+    assigned: null,
+    used: [],
+    totals: null,
+  }
+  const pr1 = Blank.find({
+    dateAdded: {
+      $gte: start.toDate(),
+      $lte: end.toDate()
+  }})
+    .select("uniqueNumber dateAdded")
+    .sort('uniqueNumber')
+    .exec()
+    .then(docs => {
+        docs.map(doc => {
+          report.added.push(doc.uniqueNumber)
+        })
+      
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({ message: "Error retrieving blank(Server)" });
+    });
+
+  const pr2 = Blank.find({
+    dateAssigned: {
+      $gte: start.toDate(),
+      $lte: end.toDate()
+  }})
+    .select("uniqueNumber dateAssigned advisor")
+    .populate("advisor", "uniqueNumber")
+    .sort('uniqueNumber')
+    .exec()
+    .then(docs => {
+      console.log("From database", docs);
+      report.assigned = docs.map(doc => {
+        return {
+          uniqueNumber: doc.uniqueNumber,
+          advisor: doc.advisor.uniqueNumber
+        }
+      })
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({ message: "Error retrieving blank(Server)" });
+    });
+    
+    const pr3 = Transaciton.find({
+      date: {
+        $gte: start.toDate(),
+        $lte: end.toDate()
+    }})
+    .select("blank")
+    .populate("blank", "uniqueNumber")
+    .exec()
+    .then(docs => {
+      console.log("From database", docs);
+      // report.used = docs.map(doc => {
+      //   return {
+      //     uniqueNumber: doc.blank.uniqueNumber,
+      //   };
+      // })
+
+      docs.map(doc => {
+        report.used.push(doc.blank.uniqueNumber)
+      })
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({ message: "Error retrieving transactions(Server)" });
+    });
+
+    const pr4 = Blank.find({
+      used: false
+    })
+      .select("uniqueNumber advisor used")
+      .populate("advisor", "uniqueNumber")
+      .sort("uniqueNumber")
+      .exec()
+      .then(doc => {
+        console.log("From database", doc);
+        report.totals = doc
+      })
+      .catch(err => {
+        console.log(err);
+        res.status(500).json({ message: "Error retrieving blank(Server)" });
+      });
+
+      Promise.all([pr1,pr2, pr3, pr4])
+        .then((values) => {
+          const pr1res = values[0]
+          const pr2res = values[1]
+          const pr3res = values[2]
+          const pr4res = values[3]
+
+          res.status(200).json(report)
+        })
+        .catch((reason) => {
+
+          logger.error(`msg`, reason);
+          return res.status(400).send({ reason: 'unknown' });
+  
+      });
 }

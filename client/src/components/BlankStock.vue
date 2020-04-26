@@ -20,6 +20,29 @@
                             <v-form ref="add" v-model="valid">
                             <v-row>
                                 <v-col cols="12" sm="12">
+                                    <v-dialog
+                                    ref="picker"
+                                    v-model="modal"
+                                    :return-value.sync="date"
+                                    persistent
+                                    width="290px"
+                                    >
+                                    <template v-slot:activator="{ on }">
+                                        <v-text-field
+                                        v-model="date"
+                                        label="Date"
+                                        readonly
+                                        v-on="on"
+                                        ></v-text-field>
+                                    </template>
+                                    <v-date-picker v-model="date">
+                                        <v-spacer></v-spacer>
+                                        <v-btn text color="primary" @click="modal = false">Cancel</v-btn>
+                                        <v-btn text color="primary" @click="$refs.picker.save(date)">OK</v-btn>
+                                    </v-date-picker>
+                                    </v-dialog>
+                                </v-col>
+                                <v-col cols="12" sm="12">
                                     <v-text-field label="Blank Range Start" v-model="blankmin" required></v-text-field>
                                 </v-col>
                                 <v-col cols="12" sm="12">
@@ -110,7 +133,8 @@
                                      <span class="headline"> Blank Information</span>
                                      <div class="text-justify subtitle-1">
                                         <ul style="list-style-type:none;">
-                                            <li>Advisor: {{blank.advisor.name}}</li>
+                                            <li>Blank exists</li>
+                                            <li v-if="blank.advisor != undefined">Advisor: {{blank.advisor.name}}</li>
                                         </ul>
                                     </div>
                                     <div v-if="transaction != null">
@@ -155,6 +179,29 @@
                             <v-container>
                             <v-form ref="assign" v-model="valid">
                             <v-row>
+                                <v-col cols="12" sm="12">
+                                    <v-dialog
+                                    ref="picker"
+                                    v-model="modal1"
+                                    :return-value.sync="date"
+                                    persistent
+                                    width="290px"
+                                    >
+                                    <template v-slot:activator="{ on }">
+                                        <v-text-field
+                                        v-model="date"
+                                        label="Date"
+                                        readonly
+                                        v-on="on"
+                                        ></v-text-field>
+                                    </template>
+                                    <v-date-picker v-model="date">
+                                        <v-spacer></v-spacer>
+                                        <v-btn text color="primary" @click="modal1 = false">Cancel</v-btn>
+                                        <v-btn text color="primary" @click="$refs.picker.save(date)">OK</v-btn>
+                                    </v-date-picker>
+                                    </v-dialog>
+                                </v-col>
                                 <v-col cols="12" sm="12">
                                     <v-text-field label="Blank Range Start" v-model="blankmin" required></v-text-field>
                                 </v-col>
@@ -247,6 +294,9 @@ export default {
             error: null,
             blanks: [],
             valid: null,
+            date: new Date().toISOString().substr(0, 10),
+            modal: false,
+            modal1: false
             
         }
     },
@@ -264,7 +314,7 @@ export default {
         async addBlanks() {
             try {
                 for (let index = this.blankmin; index <= this.blankmax; index++) {
-                    await BlanksService.create({uniqueNumber: index})
+                    await BlanksService.create({uniqueNumber: index, dateAdded: this.date})
                 }
                 this.addtoggle = false
                 this.blankmin = null
@@ -297,10 +347,12 @@ export default {
                 this.blankmax = null
             } catch (err) {
                 this.error = err.response.data.message
+                console.log(this.error)
             }
             try{
                 this.transaction = (await TransactionsService.getSingleByBlank(this.blank._id)).data.transaction
-            } catch(error){}
+            } catch(error){
+            }
         },
 
         async checkBlanks(){
@@ -326,7 +378,7 @@ export default {
 
         async assignBlanks(){
             this.checktoggle = false
-            let pairs = [{propName: "advisor", value: null}]
+            let pairs = [{propName: "advisor", value: null}, {propName: "dateAssigned", value: this.date}]
             let id = this.advisorId[this.advisorNo.indexOf(this.indadvisorNo)]
             pairs[0].value = id
             try {

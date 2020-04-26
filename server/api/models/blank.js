@@ -31,13 +31,7 @@ const blankSchema = mongoose.Schema({
 
     used: {
         type: Boolean,
-        default: function() {
-            if(this.coupons.length > 0){
-                return true 
-            } else {
-                return false
-            }
-        }
+        default: false
     }
 });
 
