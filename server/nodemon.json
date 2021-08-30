@@ -1,0 +1,6 @@
+{
+    "env": {
+        "MONGO_ATLAS_ADDR": "/mongodb+srv://yury:mHnp5s4aSvCsdiU@cluster0-b52rj.mongodb.net/test?retryWrites=true&w=majority",
+        "JWT_KEY": "secret"
+    }
+}
